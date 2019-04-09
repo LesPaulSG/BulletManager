@@ -1,0 +1,9 @@
+﻿  BulletManager.cpp
+c:\users\gtx\documents\github\bulletmanager\platformer\bulletmanager.cpp(27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+c:\users\gtx\documents\github\bulletmanager\platformer\bulletmanager.cpp(39): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+c:\users\gtx\documents\github\bulletmanager\platformer\bulletmanager.cpp(70): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Platformer.vcxproj -> C:\Users\GTX\Documents\GitHub\BulletManager\x64\Debug\Platformer.exe
