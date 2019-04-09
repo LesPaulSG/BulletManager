@@ -23,7 +23,7 @@ int main()
 	bulletManager.AddWall(&up);
 	bulletManager.AddWall(&down);
 
-	RenderWindow window(VideoMode(width,height), "Platformer", Style::Fullscreen);
+	RenderWindow window(VideoMode(width,height), "BulletManager", Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 
 	while (window.isOpen())
@@ -47,7 +47,8 @@ int main()
 					float y = mouseReleasedPos.y - bulletStartPos.y;
 					Vector2f direction(x, y);
 					float distance = sqrt((x*x) + (y*y));
-					bulletManager.Fire(startPos, direction, distance * 100, 10);
+					float i = 1;
+					bulletManager.Fire(startPos, direction, distance, i+1);
 				}
 			}
 		}
