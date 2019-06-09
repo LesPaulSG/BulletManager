@@ -1,5 +1,6 @@
 #include "BulletManager.h"
 #include <iostream>
+#include <cmath>
 
 ///////////// BulletManager /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +48,7 @@ void BulletManager::Update(float time) {
 		if (!iter->GetAlive()) {
 			//std::cout << iter->GetAlive() << std::endl;
 			this->bullets_.erase(iter);
+			break;
 		}
 	}
 }
@@ -63,10 +65,6 @@ BulletManager::~BulletManager() {
 ///////////// Bullet ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime) : pos_(pos), dir_(dir), speed_(speed), lifeTime_(lifeTime), time_(0), alive_(true) {
-	//this->pos_ = pos;
-	//this->dir_ = dir;
-	//this->speed_ = speed;
-	//this->lifeTime_ = lifeTime;
 	this->body_.setPosition(pos);
 	this->body_.setOrigin(Vector2f(this->body_.getOrigin().x+5.0,this->body_.getOrigin().y+5.0));
 	this->body_.setRadius(10.0);
@@ -129,29 +127,42 @@ Bullet::~Bullet() {
 ///////////// Wall //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Wall::Wall() : destructable_(true) {
-	//this->destructable_ = true;
 	this->body_.setSize(Vector2f(0,0));
 	this->body_.setRotation(0);
 	this->body_.setFillColor(Color::White);
 }
 
-Wall::Wall(Vector2f pos, Vector2f size, float angle) {
-	this->body_.setPosition(pos);
-	this->body_.setSize(size);
-	this->body_.setRotation(angle);
+Wall::Wall(Vector2f A, Vector2f B) : pointA_(A), pointB_(B), destructable_(true) {
+	float lenght = sqrt(pow((B.x - A.x), 2) + pow((B.y - A.y), 2));
+	CalculateVector();
+	CalculateRotation();
+	this->body_.setPosition(A);
+	this->body_.setSize(Vector2f(5, lenght));
 	this->body_.setFillColor(Color::Yellow);
 }
 
-Wall::Wall(Vector2f pos, Vector2f size, float angle, bool destructable) : destructable_(destructable) {
-	//this->destructable_ = destructable;
-	this->body_.setPosition(pos);
-	this->body_.setSize(size);
-	this->body_.setRotation(angle);
+Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA_(A), pointB_(B), destructable_(destructable) {
+	float lenght = sqrt(pow((B.x - A.x), 2) + pow((B.y - A.y), 2));
+	CalculateVector();
+	CalculateRotation();
+	this->body_.setPosition(A);
+	this->body_.setSize(Vector2f(5, lenght));
 	if (destructable) {
 		this->body_.setFillColor(Color::Yellow);
 	} else {
 		this->body_.setFillColor(Color::Green);
 	}
+}
+
+void Wall::CalculateVector() {
+	this->vector_.x = this->pointB_.x - this->pointA_.x;
+	this->vector_.y = this->pointB_.y - this->pointA_.y;
+}
+
+void Wall::CalculateRotation() {
+	double angle = acos(this->vector_.y / (sqrt(this->vector_.x * this->vector_.x + this->vector_.y * this->vector_.y)));
+	angle *= -(180 / 3.14);
+	this->body_.setRotation(angle);
 }
 
 RectangleShape Wall::GetBody() {

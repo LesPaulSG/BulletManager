@@ -4,26 +4,28 @@
 
 using namespace sf;
 
+const int height = VideoMode::getDesktopMode().height;
+const int width = VideoMode::getDesktopMode().width;
+RenderWindow window(VideoMode(width, height), "BulletManager", Style::Fullscreen);
+
 int main()
 {
 	BulletManager bulletManager;
-	Vector2i bulletStartPos;
-	Vector2i mouseReleasedPos;
+	Vector2i LmbStartPos, RmbStartPos;
+	Vector2i LmbReleasedPos, RmbReleasedPos;
 
-	int height = VideoMode::getDesktopMode().height;
-	int width = VideoMode::getDesktopMode().width;
+	Wall left(Vector2f(0,0), Vector2f(0, height), false);
+	Wall right(Vector2f(width-5,0), Vector2f(width - 5, height), false);
+	Wall up(Vector2f(0,5), Vector2f(width,5), false);
+	Wall down(Vector2f(0,height), Vector2f(width, height), false);
+	Wall test(Vector2f(0, 0), Vector2f(width, height));
 
-	Wall left(Vector2f(0,0), Vector2f(10,height), 0, false);
-	Wall right(Vector2f(width-10,0), Vector2f(10, height), 0, false);
-	Wall up(Vector2f(0,10), Vector2f(10,width), 270, false);
-	Wall down(Vector2f(10,height), Vector2f(10, width), 270, false);
-	
 	bulletManager.AddWall(&left);
 	bulletManager.AddWall(&right);
 	bulletManager.AddWall(&up);
 	bulletManager.AddWall(&down);
+	bulletManager.AddWall(&test);
 
-	RenderWindow window(VideoMode(width,height), "BulletManager", Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 
 	while (window.isOpen())
@@ -33,22 +35,24 @@ int main()
 		{
 			if (event.type == Event::Closed) {
 				window.close();
-			}
-			else if (event.type == Event::MouseButtonPressed) {
+			} else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
-					bulletStartPos = Mouse::getPosition();
+					LmbStartPos = Mouse::getPosition();
+				} else if (event.mouseButton.button == Mouse::Right) {
+					RmbStartPos = Mouse::getPosition();
 				}
-			}
-			else if (event.type == Event::MouseButtonReleased) {
+			} else if (event.type == Event::MouseButtonReleased) {
 				if (event.mouseButton.button == Mouse::Left) {
-					mouseReleasedPos = Mouse::getPosition();
-					Vector2f startPos(bulletStartPos.x, bulletStartPos.y);
-					float x = mouseReleasedPos.x - bulletStartPos.x;
-					float y = mouseReleasedPos.y - bulletStartPos.y;
+					LmbReleasedPos = Mouse::getPosition();
+					Vector2f startPos(LmbStartPos);
+					float x = LmbReleasedPos.x - LmbStartPos.x;
+					float y = LmbReleasedPos.y - LmbStartPos.y;
 					Vector2f direction(x, y);
 					float distance = sqrt((x*x) + (y*y));
-					float i = 1;
-					bulletManager.Fire(startPos, direction, distance, i+1);
+					bulletManager.Fire(startPos, direction, distance, 1);
+				} else if (event.mouseButton.button == Mouse::Right) {
+					RmbReleasedPos = Mouse::getPosition();
+					bulletManager.AddWall(&Wall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos)));
 				}
 			}
 		}

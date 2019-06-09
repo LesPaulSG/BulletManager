@@ -10,16 +10,18 @@ class Wall {
 private:
 	bool destructable_;
 	RectangleShape body_;
-	Vector2f pos_;
-	float height_;
-	float width;
+	Vector2f pointA_, pointB_;
+	Vector2f vector_;
+	//float height_;
+	//float width;
 
 public:
 	RectangleShape GetBody();
-
+	void CalculateVector();
+	void CalculateRotation();
 	Wall();
-	Wall(Vector2f, Vector2f, float);
-	Wall(Vector2f, Vector2f, float, bool);
+	Wall(Vector2f, Vector2f);
+	Wall(Vector2f, Vector2f, bool);
 	~Wall();
 };
 
