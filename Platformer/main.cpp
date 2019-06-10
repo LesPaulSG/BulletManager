@@ -14,10 +14,10 @@ int main()
 	Vector2i LmbStartPos, RmbStartPos;
 	Vector2i LmbReleasedPos, RmbReleasedPos;
 
-	Wall left(Vector2f(0,0), Vector2f(0, height), false);
-	Wall right(Vector2f(width-5,0), Vector2f(width - 5, height), false);
-	Wall up(Vector2f(0,5), Vector2f(width,5), false);
-	Wall down(Vector2f(0,height), Vector2f(width, height), false);
+	Wall left(Vector2f(0, 0), Vector2f(0, height), false);
+	Wall right(Vector2f(width - 5, 0), Vector2f(width - 5, height), false);
+	Wall up(Vector2f(0, 5), Vector2f(width, 5), false);
+	Wall down(Vector2f(0, height), Vector2f(width, height), false);
 	Wall test(Vector2f(0, 0), Vector2f(width, height));
 
 	bulletManager.AddWall(&left);
@@ -35,29 +35,33 @@ int main()
 		{
 			if (event.type == Event::Closed) {
 				window.close();
-			} else if (event.type == Event::MouseButtonPressed) {
+			}
+			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbStartPos = Mouse::getPosition();
-				} else if (event.mouseButton.button == Mouse::Right) {
+				}
+				else if (event.mouseButton.button == Mouse::Right) {
 					RmbStartPos = Mouse::getPosition();
 				}
-			} else if (event.type == Event::MouseButtonReleased) {
+			}
+			else if (event.type == Event::MouseButtonReleased) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbReleasedPos = Mouse::getPosition();
 					Vector2f startPos(LmbStartPos);
 					float x = LmbReleasedPos.x - LmbStartPos.x;
 					float y = LmbReleasedPos.y - LmbStartPos.y;
 					Vector2f direction(x, y);
-					float distance = sqrt((x*x) + (y*y));
-					bulletManager.Fire(startPos, direction, distance, 1);
-				} else if (event.mouseButton.button == Mouse::Right) {
+					float distance = sqrt((x * x) + (y * y));
+					bulletManager.Fire(startPos, direction, distance, 10);
+				}
+				else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();
 					bulletManager.AddWall(&Wall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos)));
 				}
 			}
 		}
 
-		bulletManager.Update(1.0/CLOCKS_PER_SEC);
+		bulletManager.Update(0.1 / CLOCKS_PER_SEC);
 
 		window.clear();
 		for (int i = 0; i < bulletManager.GetWallsQuntity(); i++) {

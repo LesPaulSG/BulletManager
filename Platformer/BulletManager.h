@@ -4,18 +4,32 @@
 
 using namespace sf;
 
+class Line {
+public:
+	Vector2f pointA;
+	Vector2f pointB;
+	Line();
+	Line(Vector2f, Vector2f);
+	~Line();
+};
+
+bool PointBelongsLine(Vector2f, Line, Line);
+
+Vector2f Intersection(Line, Line);
+
 ///////////// Wall //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class Wall {
 private:
 	bool destructable_;
 	RectangleShape body_;
-	Vector2f pointA_, pointB_;
 	Vector2f vector_;
 	//float height_;
 	//float width;
 
 public:
+	Vector2f pointA, pointB;
+
 	RectangleShape GetBody();
 	void CalculateVector();
 	void CalculateRotation();
@@ -47,6 +61,7 @@ public:
 	Vector2f GetPos();
 	Vector2f GetGetDir();
 	bool GetAlive();
+	void ChangeDirection(float);
 
 	//void SetRadius();
 	//void SetSpeed();
@@ -61,7 +76,7 @@ public:
 
 ///////////// BulletManager /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class BulletManager{
+class BulletManager {
 private:
 	std::vector<Bullet> bullets_;
 	std::vector<Wall> walls_;

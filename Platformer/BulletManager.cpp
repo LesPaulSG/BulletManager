@@ -2,10 +2,79 @@
 #include <iostream>
 #include <cmath>
 
+bool PointBelongsLine(Vector2f point, Line A, Line B) {
+	if (!(point.x >= std::min(A.pointA.x, A.pointB.x) && point.x <= std::max(A.pointA.x, A.pointB.x))) {
+		//std::cout << "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" << std::endl;
+		return false;
+	}
+	if (!(point.x >= std::min(B.pointA.x, B.pointB.x) && point.x <= std::max(B.pointA.x, B.pointB.x))) {
+		//std::cout << "2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222" << std::endl;
+		return false;
+	}
+	if (!(point.y >= std::min(A.pointA.y, A.pointB.y) && point.y <= std::max(A.pointA.y, A.pointB.y))) {
+		//std::cout << "3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333" << std::endl;
+		return false;
+	}
+	if (!(point.y >= std::min(B.pointA.y, B.pointB.y) && point.y <= std::max(B.pointA.y, B.pointB.y))) {
+		//std::cout << "4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+Vector2f Intersection(Line A, Line B) {
+	float kA = (A.pointB.y - A.pointA.y) / (A.pointB.x - A.pointA.x);
+	float kB = (B.pointB.y - B.pointA.y) / (B.pointB.x - B.pointA.x);
+	if (kA == kB) { // || kA == 0 || kB == 0
+		return Vector2f(-9999, -9999);
+	}
+	float bA = A.pointA.y - kA * A.pointA.x;
+	//(A.pointB.x * A.pointA.y - A.pointA.x * A.pointB.y) / (A.pointB.x - A.pointA.x);
+	float bB = B.pointA.y - kB * B.pointA.x;
+	//(B.pointB.x * B.pointA.y - B.pointA.x * B.pointB.y) / (B.pointB.x - B.pointA.x);
+	float xInter = (bB - bA) / (kA - kB);
+	if (A.pointB.x == A.pointA.x) {
+		xInter = A.pointA.x;
+	} else if (B.pointB.x == B.pointA.x) {
+		xInter = B.pointA.x;
+	}
+	float yInter = kA * xInter + bA;
+	Vector2f result(xInter, yInter);
+	if (PointBelongsLine(result, A, B)) {
+		return result;
+	}
+	return Vector2f(-9999, -9999);
+}
+
+float AngleOfIntersec(Line A, Line B) {
+	Vector2f first, second;
+	first.x = A.pointB.x - A.pointA.x;
+	first.y = A.pointB.y - A.pointA.y;
+	second.x = B.pointB.x - B.pointA.x;
+	second.y = B.pointB.y - B.pointA.y;
+	std::cout << first.x << " " << first.y << " | " << second.x << " " << second.y << std::endl;
+	float fMod = std::sqrt(first.x * first.x + first.y * first.y);
+	float sMod = std::sqrt(second.x * second.x + second.y * second.y);
+	return acos((first.x * second.x + first.y * second.y) / (fMod * sMod));
+	//return angRad *= (180 / 3.14);
+}
+
+Line::Line() {
+
+}
+
+Line::Line(Vector2f A, Vector2f B) : pointA(A), pointB(B) {
+
+}
+
+Line::~Line() {
+
+}
+
 ///////////// BulletManager /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-BulletManager::BulletManager(){
-	
+BulletManager::BulletManager() {
+
 }
 
 std::vector<Bullet>* BulletManager::GetBullets() {
@@ -16,7 +85,7 @@ std::vector<Wall>* BulletManager::GetWalls() {
 	return &this->walls_;
 }
 
-void BulletManager::AddBullet(Bullet* bullet) {
+void BulletManager::AddBullet(Bullet * bullet) {
 	this->bullets_.push_back(*bullet);
 }
 
@@ -28,7 +97,7 @@ int BulletManager::GetBulletsQuntity() {
 	return this->bullets_.size();
 }
 
-void BulletManager::AddWall(Wall* wall) {
+void BulletManager::AddWall(Wall * wall) {
 	this->walls_.push_back(*wall);
 }
 
@@ -66,17 +135,28 @@ BulletManager::~BulletManager() {
 
 Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime) : pos_(pos), dir_(dir), speed_(speed), lifeTime_(lifeTime), time_(0), alive_(true) {
 	this->body_.setPosition(pos);
-	this->body_.setOrigin(Vector2f(this->body_.getOrigin().x+5.0,this->body_.getOrigin().y+5.0));
+	this->body_.setOrigin(Vector2f(this->body_.getOrigin().x + 5.0, this->body_.getOrigin().y + 5.0));
 	this->body_.setRadius(10.0);
 	this->body_.setFillColor(Color::Red);
 }
 
-void Bullet::Update(float time, std::vector<Wall>* walls) {
-	this->pos_ += this->dir_*this->speed_*time;
+void Bullet::Update(float time, std::vector<Wall> * walls) {
+	//Vector2f newPos = this->pos_ + this->dir_ * this->speed_ * time;
+	Vector2f oldPos = this->pos_;
+	this->pos_ += this->dir_ * this->speed_ * time;
 	this->body_.setPosition(this->pos_);
 	for (int i = 0; i < walls->size(); i++) {
-		Vector2f wallPos = walls->at(i).GetBody().getPosition();
-		Vector2f wallsSize = walls->at(i).GetBody().getSize();
+		Vector2f wallPosA = walls->at(i).pointA;
+		Vector2f wallPosB = walls->at(i).pointB;
+		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
+		if (iPoint.x != -9999 && iPoint.y != -9999) {
+			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
+			std::cout << iPoint.x << " " << iPoint.y << std::endl;
+			std::cout << angle << std::endl;
+			this->ChangeDirection(angle);
+			this->pos_ = iPoint + this->dir_ * time;
+			this->body_.setPosition(iPoint);
+		}
 	}
 	this->speed_ -= time;
 	this->time_ += time;
@@ -118,30 +198,39 @@ bool Bullet::GetAlive() {
 	return this->alive_;
 }
 
+void Bullet::ChangeDirection(float angle) {
+	//angle = 180 - 2 * angle;
+	float xNew = this->dir_.x * cos(2 * angle) - this->dir_.y * sin(2 * angle);
+	float yNew = this->dir_.x * sin(2 * angle) + this->dir_.y * cos(2 * angle);
+	this->dir_.x = xNew;
+	this->dir_.y = yNew;
+}
 
 Bullet::~Bullet() {
 	this->body_.~CircleShape();
-	std::cout << "destructor" << std::endl;
 }
 
 ///////////// Wall //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Wall::Wall() : destructable_(true) {
-	this->body_.setSize(Vector2f(0,0));
+	this->body_.setSize(Vector2f(0, 0));
 	this->body_.setRotation(0);
 	this->body_.setFillColor(Color::White);
 }
 
-Wall::Wall(Vector2f A, Vector2f B) : pointA_(A), pointB_(B), destructable_(true) {
+Wall::Wall(Vector2f A, Vector2f B) : pointA(A), pointB(B), destructable_(true) {
 	float lenght = sqrt(pow((B.x - A.x), 2) + pow((B.y - A.y), 2));
 	CalculateVector();
 	CalculateRotation();
 	this->body_.setPosition(A);
 	this->body_.setSize(Vector2f(5, lenght));
 	this->body_.setFillColor(Color::Yellow);
+	std::cout << pointA.x << " " << pointA.y << std::endl;
+	std::cout << pointB.x << " " << pointB.y << std::endl;
+	std::cout << std::endl;
 }
 
-Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA_(A), pointB_(B), destructable_(destructable) {
+Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA(A), pointB(B), destructable_(destructable) {
 	float lenght = sqrt(pow((B.x - A.x), 2) + pow((B.y - A.y), 2));
 	CalculateVector();
 	CalculateRotation();
@@ -149,14 +238,18 @@ Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA_(A), pointB_(B), 
 	this->body_.setSize(Vector2f(5, lenght));
 	if (destructable) {
 		this->body_.setFillColor(Color::Yellow);
-	} else {
+	}
+	else {
 		this->body_.setFillColor(Color::Green);
 	}
+	std::cout << pointA.x << " " << pointA.y << std::endl;
+	std::cout << pointB.x << " " << pointB.y << std::endl;
+	std::cout << std::endl;
 }
 
 void Wall::CalculateVector() {
-	this->vector_.x = this->pointB_.x - this->pointA_.x;
-	this->vector_.y = this->pointB_.y - this->pointA_.y;
+	this->vector_.x = this->pointB.x - this->pointA.x;
+	this->vector_.y = this->pointB.y - this->pointA.y;
 }
 
 void Wall::CalculateRotation() {
