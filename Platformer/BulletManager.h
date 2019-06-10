@@ -30,6 +30,7 @@ private:
 public:
 	Vector2f pointA, pointB;
 
+	bool GetDestructable();
 	RectangleShape GetBody();
 	void CalculateVector();
 	void CalculateRotation();

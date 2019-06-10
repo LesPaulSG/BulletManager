@@ -155,9 +155,10 @@ void Bullet::Update(float time, std::vector<Wall> * walls) {
 	Vector2f oldPos = this->pos_;
 	this->pos_ += this->dir_ * this->speed_ * time;
 	this->body_.setPosition(this->pos_);
-	for (int i = 0; i < walls->size(); i++) {
-		Vector2f wallPosA = walls->at(i).pointA;
-		Vector2f wallPosB = walls->at(i).pointB;
+	std::vector<Wall>::iterator iter = walls->begin();
+	for (iter; iter != walls->end(); ++iter) {
+		Vector2f wallPosA = iter->pointA;
+		Vector2f wallPosB = iter->pointB;
 		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
 		if (iPoint.x != -9999 && iPoint.y != -9999) {
 			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
@@ -166,6 +167,10 @@ void Bullet::Update(float time, std::vector<Wall> * walls) {
 			this->ChangeDirection(angle, isPointRight(Line(wallPosA, wallPosB), oldPos));
 			this->pos_ = iPoint + this->dir_ * time;
 			this->body_.setPosition(iPoint);
+			if (iter->GetDestructable()) {
+				walls->erase(iter);
+				break;
+			}
 		}
 	}
 	this->speed_ -= time;
@@ -262,6 +267,10 @@ Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA(A), pointB(B), de
 	std::cout << pointA.x << " " << pointA.y << std::endl;
 	std::cout << pointB.x << " " << pointB.y << std::endl;
 	std::cout << std::endl;
+}
+
+bool Wall::GetDestructable() {
+	return this->destructable_;
 }
 
 void Wall::CalculateVector() {

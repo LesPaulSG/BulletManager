@@ -7,5 +7,48 @@ C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(148): wa
           [
               T=float
           ]
-C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(275): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(284): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(17): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(18): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(18): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(19): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(20): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(21): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(51): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(52): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\main.cpp(64): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
   Platformer.vcxproj -> C:\Users\GTX\Documents\NewBM\BulletManager\x64\Debug\BulletManager.exe
