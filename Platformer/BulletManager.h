@@ -61,7 +61,7 @@ public:
 	Vector2f GetPos();
 	Vector2f GetGetDir();
 	bool GetAlive();
-	void ChangeDirection(float);
+	void ChangeDirection(float, bool);
 
 	//void SetRadius();
 	//void SetSpeed();

@@ -59,6 +59,16 @@ float AngleOfIntersec(Line A, Line B) {
 	//return angRad *= (180 / 3.14);
 }
 
+bool isPointRight(Line line, Vector2f point) {
+	float D = (point.x - line.pointA.x) * (line.pointB.y - line.pointA.y) - (point.y - line.pointA.y) * (line.pointB.x - line.pointA.x);
+	if (D > 0) {
+		return false;
+	}
+	return true;
+}
+
+///////////// Line //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Line::Line() {
 
 }
@@ -153,7 +163,7 @@ void Bullet::Update(float time, std::vector<Wall> * walls) {
 			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
 			std::cout << iPoint.x << " " << iPoint.y << std::endl;
 			std::cout << angle << std::endl;
-			this->ChangeDirection(angle);
+			this->ChangeDirection(angle, isPointRight(Line(wallPosA, wallPosB), oldPos));
 			this->pos_ = iPoint + this->dir_ * time;
 			this->body_.setPosition(iPoint);
 		}
@@ -198,10 +208,17 @@ bool Bullet::GetAlive() {
 	return this->alive_;
 }
 
-void Bullet::ChangeDirection(float angle) {
-	//angle = 180 - 2 * angle;
-	float xNew = this->dir_.x * cos(2 * angle) - this->dir_.y * sin(2 * angle);
-	float yNew = this->dir_.x * sin(2 * angle) + this->dir_.y * cos(2 * angle);
+void Bullet::ChangeDirection(float beta, bool cond) {
+	float alpha = 90 - beta;
+	float angle = 180 - (2 * alpha);
+	float xNew, yNew;
+	if (cond) {
+		xNew = this->dir_.x * cos(angle) - this->dir_.y * sin(angle);
+		yNew = this->dir_.x * sin(angle) + this->dir_.y * cos(angle);
+	} else if (!cond) {
+		xNew = this->dir_.x * cos(-angle) - this->dir_.y * sin(-angle);
+		yNew = this->dir_.x * sin(-angle) + this->dir_.y * cos(-angle);
+	}
 	this->dir_.x = xNew;
 	this->dir_.y = yNew;
 }

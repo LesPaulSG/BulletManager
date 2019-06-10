@@ -1,11 +1,11 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   BulletManager.cpp
-C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(98): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(110): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(139): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(107): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(119): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(148): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(259): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\GTX\Documents\NewBM\BulletManager\Platformer\BulletManager.cpp(275): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Platformer.vcxproj -> C:\Users\GTX\Documents\NewBM\BulletManager\x64\Debug\BulletManager.exe
