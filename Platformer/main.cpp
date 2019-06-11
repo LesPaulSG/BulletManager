@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include "BulletManager.h"
 
@@ -25,6 +26,17 @@ int main()
 	bulletManager.AddWall(&right);
 	bulletManager.AddWall(&up);
 	bulletManager.AddWall(&down);
+
+	std::ifstream fin;
+	fin.open("4Agames.txt");
+	int quantity;
+	fin >> quantity;
+	for (int i = 0; i < quantity; ++i) {
+		int A, B, C, D;
+		fin >> A >> B >> C >> D;
+		bulletManager.AddWall(&Wall(Vector2f(A, B), Vector2f(C, D)));
+	}
+	fin.close();
 
 	while (window.isOpen())
 	{
