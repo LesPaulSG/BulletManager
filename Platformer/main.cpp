@@ -28,7 +28,7 @@ int main()
 	bulletManager.AddWall(&down);
 
 	std::ifstream fin;
-	fin.open("4Agames.txt");
+	fin.open("Walls.txt");
 	int quantity;
 	fin >> quantity;
 	for (int i = 0; i < quantity; ++i) {
@@ -66,7 +66,7 @@ int main()
 			}
 		}
 
-		bulletManager.Update(1. / CLOCKS_PER_SEC);
+		bulletManager.Update(0.1 / CLOCKS_PER_SEC);
 
 		window.clear();
 		for (std::vector<Wall>::iterator iter = bulletManager.GetWalls()->begin(); iter != bulletManager.GetWalls()->end(); ++iter) {

@@ -10,17 +10,21 @@ float LenghtOfLine(Vector2f A, Vector2f B) {
 	return sqrt(pow((B.x - A.x), 2) + pow((B.y - A.y), 2));
 }
 
+bool isPointBeetwenPoints(float x, float a, float b) {
+	return (x >= std::min(a, b) && x <= std::max(a, b));
+}
+
 bool PointBelongsLine(Vector2f point, Line A, Line B) {
-	if (!(point.x >= std::min(A.pointA.x, A.pointB.x) && point.x <= std::max(A.pointA.x, A.pointB.x))) {
+	if (!isPointBeetwenPoints(point.x, A.pointA.x, A.pointB.x)) {
 		return false;
 	}
-	if (!(point.x >= std::min(B.pointA.x, B.pointB.x) && point.x <= std::max(B.pointA.x, B.pointB.x))) {
+	if (!isPointBeetwenPoints(point.x, B.pointA.x, B.pointB.x)) {
 		return false;
 	}
-	if (!(point.y >= std::min(A.pointA.y, A.pointB.y) && point.y <= std::max(A.pointA.y, A.pointB.y))) {
+	if (!isPointBeetwenPoints(point.y, A.pointA.y, A.pointB.y)) {
 		return false;
 	}
-	if (!(point.y >= std::min(B.pointA.y, B.pointB.y) && point.y <= std::max(B.pointA.y, B.pointB.y))) {
+	if (!isPointBeetwenPoints(point.y, B.pointA.y, B.pointB.y)) {
 		return false;
 	}
 	return true;

@@ -15,6 +15,8 @@ public:
 
 float LenghtOfLine(Vector2f, Vector2f);
 
+bool isPointBeetwenPoints(float, float, float);
+
 bool PointBelongsLine(Vector2f, Line, Line);
 
 Vector2f Intersection(Line, Line);
