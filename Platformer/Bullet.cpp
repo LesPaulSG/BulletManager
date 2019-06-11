@@ -11,81 +11,48 @@ Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime) : pos_(p
 	this->body_.setFillColor(Color::Red);
 }
 
-void Bullet::Update(float time, std::vector<Wall> * walls) {
-	//Vector2f newPos = this->pos_ + this->dir_ * this->speed_ * time;
-	Vector2f oldPos = this->pos_;
-	this->pos_ += this->dir_ * this->speed_ * time;
-	this->body_.setPosition(this->pos_);
-	std::vector<Wall>::iterator iter = walls->begin();
-	for (iter; iter != walls->end(); ++iter) {
-		Vector2f wallPosA = iter->pointA;
-		Vector2f wallPosB = iter->pointB;
-		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
-		if (iPoint.x != -9999 && iPoint.y != -9999) {
-			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(wallPosA, wallPosB));
-			//std::cout << iPoint.x << " " << iPoint.y << std::endl;
-			//std::cout << angle << std::endl;
-			this->ChangeDirection(angle, isPointRight(Line(wallPosA, wallPosB), oldPos));
-			this->pos_ = iPoint + this->dir_ * time;
-			this->body_.setPosition(iPoint);
-			if (iter->GetDestructable()) {
-				walls->erase(iter);
-				break;
-			}
-		}
-	}
-	this->speed_ -= time;
-	this->time_ += time;
-	//std::cout << time << "\t" << time_ << "\t" << lifeTime_ << "\t &boolean" << this->alive_ << std::endl;
-	if (time_ >= lifeTime_) {
-		this->alive_ = false;
-	}
-}
-
 CircleShape Bullet::GetBody() {
 	return this->body_;
-}
-
-float Bullet::GetRadius() {
-	return this->body_.getRadius();
-}
-
-float Bullet::GetSpeed() {
-	return this->speed_;
-}
-
-float Bullet::GetTime() {
-	return this->time_;
-}
-
-float Bullet::GetLifeTime() {
-	return this->lifeTime_;
-}
-
-Vector2f Bullet::GetPos() {
-	return this->pos_;
-}
-
-Vector2f Bullet::GetGetDir() {
-	return this->dir_;
 }
 
 bool Bullet::GetAlive() {
 	return this->alive_;
 }
 
-void Bullet::ChangeDirection(float beta, bool cond) {
-	float alpha = 90 - beta;
-	float angle = 180 - (2 * alpha);
-	float xNew, yNew;
-	if (cond) {
-		xNew = this->dir_.x * cos(angle) - this->dir_.y * sin(angle);
-		yNew = this->dir_.x * sin(angle) + this->dir_.y * cos(angle);
+void Bullet::Update(float time, std::vector<Wall> * walls) {
+	Vector2f oldPos = this->pos_;					//position before update
+	this->pos_ += this->dir_ * this->speed_ * time;	//new position
+	this->body_.setPosition(this->pos_);
+
+	for (std::vector<Wall>::iterator iter = walls->begin(); iter != walls->end(); ++iter) {
+		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB)); //if no intersection returns (-9999, -9999)
+		if (iPoint.x > -1000 && iPoint.y > -100) {													//checks for intersection
+			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB));
+			this->ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
+			this->pos_ = iPoint + this->dir_ * this->speed_ * time;	//update positon to intersection point + update distance
+			this->body_.setPosition(this->pos_);
+			if (iter->GetDestructable()) {
+				walls->erase(iter);		
+				break;					
+			}
+		}
 	}
-	else if (!cond) {
-		xNew = this->dir_.x * cos(-angle) - this->dir_.y * sin(-angle);
-		yNew = this->dir_.x * sin(-angle) + this->dir_.y * cos(-angle);
+
+	this->speed_ -= time;	
+	this->time_ += time;	
+	if (this->time_ >= this->lifeTime_) {
+		this->alive_ = false;
 	}
+}
+
+void Bullet::ChangeDirection(float beta, bool right) {
+	float alpha = 90 - beta;			//calculate alpha angle	
+	float angle = 180 - (2 * alpha);	//rotation angle
+	if (!right) {
+		angle *= -1;
+	}
+	float xNew = this->dir_.x * cos(angle) - this->dir_.y * sin(angle);
+	float yNew = this->dir_.x * sin(angle) + this->dir_.y * cos(angle);
 	this->dir_.x = xNew;
 	this->dir_.y = yNew;
 }

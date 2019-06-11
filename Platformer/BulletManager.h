@@ -5,23 +5,21 @@
 #include "Wall.h"
 #include "Definitions.h"
 
+const int BULLETS_MAX_CAPACITY = 10;
+const int WALLS_MAX_CAPACITY = 50;
+
 class BulletManager {
 private:
 	std::vector<Bullet> bullets_;
 	std::vector<Wall> walls_;
 public:
-	BulletManager();
-
 	std::vector<Bullet>* GetBullets();
 	std::vector<Wall>* GetWalls();
-	void AddBullet(Bullet*);
-	void RemoveBullet(std::vector<Bullet>::iterator);
-	int GetBulletsQuntity();
+
 	void AddWall(Wall*);
-	void RemoveWall(std::vector<Wall>::iterator);
-	int GetWallsQuntity();
 	void Update(float);
 	void Fire(Vector2f, Vector2f, float, float);
 
+	BulletManager();
 	~BulletManager();
 };

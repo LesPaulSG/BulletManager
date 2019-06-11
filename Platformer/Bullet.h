@@ -13,15 +13,10 @@ private:
 	bool alive_;
 
 public:
-	void Update(float, std::vector<Wall>*);
 	CircleShape GetBody();
-	float GetRadius();
-	float GetSpeed();
-	float GetTime();
-	float GetLifeTime();
-	Vector2f GetPos();
-	Vector2f GetGetDir();
 	bool GetAlive();
+
+	void Update(float, std::vector<Wall>*);
 	void ChangeDirection(float, bool);
 
 	Bullet(Vector2f, Vector2f, float, float);

@@ -4,29 +4,27 @@
 
 using namespace sf;
 
-const int height = VideoMode::getDesktopMode().height;
-const int width = VideoMode::getDesktopMode().width;
-RenderWindow window(VideoMode(width, height), "BulletManager", Style::Fullscreen);
+const int HEIGHT = VideoMode::getDesktopMode().height;
+const int WIDTH = VideoMode::getDesktopMode().width;
 
 int main()
 {
-	BulletManager bulletManager;
-	Vector2i LmbStartPos, RmbStartPos;
-	Vector2i LmbReleasedPos, RmbReleasedPos;
+	RenderWindow window(VideoMode(WIDTH, HEIGHT), "BulletManager", Style::Fullscreen);
+	window.setVerticalSyncEnabled(true);
 
-	Wall left(Vector2f(0, 0), Vector2f(0, height), false);
-	Wall right(Vector2f(width - 5, 0), Vector2f(width - 5, height), false);
-	Wall up(Vector2f(0, 5), Vector2f(width, 5), false);
-	Wall down(Vector2f(0, height), Vector2f(width, height), false);
-	Wall test(Vector2f(0, 0), Vector2f(width, height));
+	BulletManager bulletManager;
+	Vector2i LmbStartPos, RmbStartPos;			//mouse positions for firing
+	Vector2i LmbReleasedPos, RmbReleasedPos;	//and creating walls
+
+	Wall left(Vector2f(0, 0), Vector2f(0, HEIGHT), false);						//default border undestructable walls
+	Wall right(Vector2f(WIDTH - 5, 0), Vector2f(WIDTH - 5, HEIGHT), false);		//
+	Wall up(Vector2f(0, 5), Vector2f(WIDTH, 5), false);							//
+	Wall down(Vector2f(0, HEIGHT), Vector2f(WIDTH, HEIGHT), false);				//
 
 	bulletManager.AddWall(&left);
 	bulletManager.AddWall(&right);
 	bulletManager.AddWall(&up);
 	bulletManager.AddWall(&down);
-	bulletManager.AddWall(&test);
-
-	window.setVerticalSyncEnabled(true);
 
 	while (window.isOpen())
 	{
@@ -35,44 +33,35 @@ int main()
 		{
 			if (event.type == Event::Closed) {
 				window.close();
-			}
-			else if (event.type == Event::MouseButtonPressed) {
+			} else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
-					LmbStartPos = Mouse::getPosition();
+					LmbStartPos = Mouse::getPosition();					//save coordinates of LMB pressed
+				} else if (event.mouseButton.button == Mouse::Right) {
+					RmbStartPos = Mouse::getPosition();					//save coordinates of RMB pressed
 				}
-				else if (event.mouseButton.button == Mouse::Right) {
-					RmbStartPos = Mouse::getPosition();
-				}
-			}
-			else if (event.type == Event::MouseButtonReleased) {
+			} else if (event.type == Event::MouseButtonReleased) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbReleasedPos = Mouse::getPosition();
-					Vector2f startPos(LmbStartPos);
 					float x = LmbReleasedPos.x - LmbStartPos.x;
 					float y = LmbReleasedPos.y - LmbStartPos.y;
 					Vector2f direction(x, y);
-					float distance = sqrt((x * x) + (y * y));
-					bulletManager.Fire(startPos, direction, distance, 10);
-				}
-				else if (event.mouseButton.button == Mouse::Right) {
+					float speed = sqrt((x * x) + (y * y));
+					bulletManager.Fire(Vector2f(LmbStartPos), direction, speed, 1);					//firing when LMB released
+				} else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();
-					bulletManager.AddWall(&Wall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos)));
+					bulletManager.AddWall(&Wall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos)));	//build a wall when RMB released
 				}
 			}
 		}
 
-		bulletManager.Update(0.1 / CLOCKS_PER_SEC);
+		bulletManager.Update(1. / CLOCKS_PER_SEC);
 
 		window.clear();
-		for (int i = 0; i < bulletManager.GetWallsQuntity(); i++) {
-			if (bulletManager.GetWallsQuntity() > 0) {
-				window.draw(bulletManager.GetWalls()->at(i).GetBody());
-			}
+		for (std::vector<Wall>::iterator iter = bulletManager.GetWalls()->begin(); iter != bulletManager.GetWalls()->end(); ++iter) {
+			window.draw(iter->GetBody());
 		}
-		for (int i = 0; i < bulletManager.GetBulletsQuntity(); i++) {
-			if (bulletManager.GetBulletsQuntity() > 0) {
-				window.draw(bulletManager.GetBullets()->at(i).GetBody());
-			}
+		for (std::vector<Bullet>::iterator iter = bulletManager.GetBullets()->begin(); iter != bulletManager.GetBullets()->end(); ++iter) {
+			window.draw(iter->GetBody());
 		}
 		window.display();
 

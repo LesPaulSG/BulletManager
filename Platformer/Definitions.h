@@ -3,14 +3,17 @@
 
 using namespace sf;
 
+//helper class
 class Line {
 public:
 	Vector2f pointA;
 	Vector2f pointB;
-	Line();
+
 	Line(Vector2f, Vector2f);
 	~Line();
 };
+
+float LenghtOfLine(Vector2f, Vector2f);
 
 bool PointBelongsLine(Vector2f, Line, Line);
 
