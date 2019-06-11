@@ -281,6 +281,9 @@ void Wall::CalculateVector() {
 void Wall::CalculateRotation() {
 	double angle = acos(this->vector_.y / (sqrt(this->vector_.x * this->vector_.x + this->vector_.y * this->vector_.y)));
 	angle *= -(180 / 3.14);
+	if (this->pointA.x > this->pointB.x) {
+		angle *= -1;
+	}
 	this->body_.setRotation(angle);
 }
 
