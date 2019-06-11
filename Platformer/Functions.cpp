@@ -1,8 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "BulletManager.h"
-#include "Bullet.h"
-#include "Wall.h"
 #include "Definitions.h"
 
 bool PointBelongsLine(Vector2f point, Line A, Line B) {

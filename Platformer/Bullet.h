@@ -24,13 +24,6 @@ public:
 	bool GetAlive();
 	void ChangeDirection(float, bool);
 
-	//void SetRadius();
-	//void SetSpeed();
-	//void SetTime();
-	//void SetLifeTime();
-	//void SetPos();
-	//void SetDir();
-
 	Bullet(Vector2f, Vector2f, float, float);
 	~Bullet();
 };

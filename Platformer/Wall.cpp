@@ -1,9 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "BulletManager.h"
-#include "Bullet.h"
 #include "Wall.h"
-#include "Definitions.h"
 
 Wall::Wall() : destructable_(true) {
 	this->body_.setSize(Vector2f(0, 0));

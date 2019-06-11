@@ -1,9 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "BulletManager.h"
-#include "Bullet.h"
-#include "Wall.h"
-#include "Definitions.h"
 
 using namespace sf;
 
