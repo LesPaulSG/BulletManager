@@ -31,21 +31,21 @@ bool PointBelongsLine(Vector2f point, Line A, Line B) {
 }
 
 Vector2f Intersection(Line A, Line B) {
-	float kA = (A.pointB.y - A.pointA.y) / (A.pointB.x - A.pointA.x);
-	float kB = (B.pointB.y - B.pointA.y) / (B.pointB.x - B.pointA.x);
+	double kA = (A.pointB.y - A.pointA.y) / (A.pointB.x - A.pointA.x);
+	double kB = (B.pointB.y - B.pointA.y) / (B.pointB.x - B.pointA.x);
 	if (kA == kB) {
 		return Vector2f(-9999, -9999);
 	}
-	float bA = A.pointA.y - kA * A.pointA.x;
-	float bB = B.pointA.y - kB * B.pointA.x;
-	float xInter = (bB - bA) / (kA - kB);
+	double bA = A.pointA.y - kA * A.pointA.x;
+	double bB = B.pointA.y - kB * B.pointA.x;
+	double xInter = (bB - bA) / (kA - kB);
 	if (A.pointB.x == A.pointA.x) {
 		xInter = A.pointA.x;
 	}
 	else if (B.pointB.x == B.pointA.x) {
 		xInter = B.pointA.x;
 	}
-	float yInter = kA * xInter + bA;
+	double yInter = kA * xInter + bA;
 	Vector2f result(xInter, yInter);
 	if (PointBelongsLine(result, A, B)) {	
 		return result;						
@@ -74,3 +74,14 @@ bool isPointRight(Line line, Vector2f point) {
 	}
 	return true;
 }
+
+/*void DrawFrame(RenderWindow* window, BulletManager* bM) {
+	window->clear();
+	for (std::vector<Wall>::iterator iter = bM->GetWalls()->begin(); iter != bM->GetWalls()->end(); ++iter) {
+		window->draw(iter->GetBody());
+	}
+	for (std::vector<Bullet>::iterator iter = bM->GetBullets()->begin(); iter != bM->GetBullets()->end(); ++iter) {
+		window->draw(iter->GetBody());
+	}
+	window->display();
+}*/

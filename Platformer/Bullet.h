@@ -16,6 +16,7 @@ public:
 	CircleShape GetBody();
 	bool GetAlive();
 
+	void CheckCollision(float, int, int, std::vector<Wall>*, Vector2f);
 	void Update(float, std::vector<Wall>*);
 	void ChangeDirection(float, bool);
 

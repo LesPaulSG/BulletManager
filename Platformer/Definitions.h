@@ -1,7 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+//#include "BulletManager.h"
 
 using namespace sf;
+
+const int BULLETS_MAX_CAPACITY = 10;
+const int WALLS_MAX_CAPACITY = 50;
 
 //helper class
 class Line {
@@ -24,3 +28,5 @@ Vector2f Intersection(Line, Line);
 float AngleOfIntersec(Line, Line);
 
 bool isPointRight(Line, Vector2f);
+
+//void DrawFrame(RenderWindow*, BulletManager*);

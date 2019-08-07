@@ -1,12 +1,23 @@
 #include <iostream>
 #include <fstream>
+#include <thread>
+#include <chrono>
 #include <SFML/Graphics.hpp>
 #include "BulletManager.h"
+#include "MultiThreadDef.h"
 
 using namespace sf;
 
 const int HEIGHT = VideoMode::getDesktopMode().height;
 const int WIDTH = VideoMode::getDesktopMode().width;
+
+void thr() {
+	std::cout << "start" << std::endl;
+	for (int i = 0; i < 10000; i++) {
+
+	}
+	std::cout << "end" << std::endl;
+}
 
 int main()
 {
@@ -38,6 +49,10 @@ int main()
 	}
 	fin.close();
 
+	std::thread bMThread;
+	
+	//sf::Thread drawingThread(&DrawFrame, &window, &bulletManager);
+
 	while (window.isOpen())
 	{
 		Event event;
@@ -45,28 +60,42 @@ int main()
 		{
 			if (event.type == Event::Closed) {
 				window.close();
-			} else if (event.type == Event::MouseButtonPressed) {
+			}
+			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbStartPos = Mouse::getPosition();					//save coordinates of LMB pressed
-				} else if (event.mouseButton.button == Mouse::Right) {
+				}
+				else if (event.mouseButton.button == Mouse::Right) {
 					RmbStartPos = Mouse::getPosition();					//save coordinates of RMB pressed
 				}
-			} else if (event.type == Event::MouseButtonReleased) {
+			}
+			else if (event.type == Event::MouseButtonReleased) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbReleasedPos = Mouse::getPosition();
 					float x = LmbReleasedPos.x - LmbStartPos.x;
 					float y = LmbReleasedPos.y - LmbStartPos.y;
 					Vector2f direction(x, y);
 					float speed = sqrt((x * x) + (y * y));
-					bulletManager.Fire(Vector2f(LmbStartPos), direction, speed, 1);					//firing when LMB released
-				} else if (event.mouseButton.button == Mouse::Right) {
+					//std::thread fireThread([&]() {
+					//bulletManager.Fire(Vector2f(LmbStartPos), direction, speed, 1);
+					//});
+					bMThread = std::thread(&BulletManager::Fire, &bulletManager, Vector2f(LmbStartPos), direction, speed, 1);
+					//bulletManager.Fire(Vector2f(LmbStartPos), direction, speed, 1);					//firing when LMB released
+					bMThread.detach();
+				}
+				else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();
-					bulletManager.AddWall(&Wall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos)));	//build a wall when RMB released
+					bMThread = std::thread(&BulletManager::CreateWall, &bulletManager, Vector2f(RmbStartPos), Vector2f(RmbReleasedPos));
+					//bulletManager.CreateWall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos));	//build a wall when RMB released
+					bMThread.detach();
 				}
 			}
 		}
 
-		bulletManager.Update(0.1 / CLOCKS_PER_SEC);
+		bulletManager.Update(1.0 / CLOCKS_PER_SEC);
+
+		//drawingThread = std::thread{ DrawFrame, &window, &bulletManager };
+		//drawingThread.detach();
 
 		window.clear();
 		for (std::vector<Wall>::iterator iter = bulletManager.GetWalls()->begin(); iter != bulletManager.GetWalls()->end(); ++iter) {
