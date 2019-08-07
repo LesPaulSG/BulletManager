@@ -4,20 +4,11 @@
 #include <chrono>
 #include <SFML/Graphics.hpp>
 #include "BulletManager.h"
-#include "MultiThreadDef.h"
 
 using namespace sf;
 
 const int HEIGHT = VideoMode::getDesktopMode().height;
 const int WIDTH = VideoMode::getDesktopMode().width;
-
-void thr() {
-	std::cout << "start" << std::endl;
-	for (int i = 0; i < 10000; i++) {
-
-	}
-	std::cout << "end" << std::endl;
-}
 
 int main()
 {
@@ -50,8 +41,6 @@ int main()
 	fin.close();
 
 	std::thread bMThread;
-	
-	//sf::Thread drawingThread(&DrawFrame, &window, &bulletManager);
 
 	while (window.isOpen())
 	{
@@ -76,26 +65,18 @@ int main()
 					float y = LmbReleasedPos.y - LmbStartPos.y;
 					Vector2f direction(x, y);
 					float speed = sqrt((x * x) + (y * y));
-					//std::thread fireThread([&]() {
-					//bulletManager.Fire(Vector2f(LmbStartPos), direction, speed, 1);
-					//});
-					bMThread = std::thread(&BulletManager::Fire, &bulletManager, Vector2f(LmbStartPos), direction, speed, 1);
-					//bulletManager.Fire(Vector2f(LmbStartPos), direction, speed, 1);					//firing when LMB released
+					bMThread = std::thread(&BulletManager::Fire, &bulletManager, Vector2f(LmbStartPos), direction, speed, 1);	//firing when LMB released
 					bMThread.detach();
 				}
 				else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();
-					bMThread = std::thread(&BulletManager::CreateWall, &bulletManager, Vector2f(RmbStartPos), Vector2f(RmbReleasedPos));
-					//bulletManager.CreateWall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos));	//build a wall when RMB released
+					bMThread = std::thread(&BulletManager::CreateWall, &bulletManager, Vector2f(RmbStartPos), Vector2f(RmbReleasedPos));	//build a wall when RMB released
 					bMThread.detach();
 				}
 			}
 		}
 
 		bulletManager.Update(1.0 / CLOCKS_PER_SEC);
-
-		//drawingThread = std::thread{ DrawFrame, &window, &bulletManager };
-		//drawingThread.detach();
 
 		window.clear();
 		for (std::vector<Wall>::iterator iter = bulletManager.GetWalls()->begin(); iter != bulletManager.GetWalls()->end(); ++iter) {

@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-//#include "BulletManager.h"
 
 using namespace sf;
 
@@ -28,5 +27,3 @@ Vector2f Intersection(Line, Line);
 float AngleOfIntersec(Line, Line);
 
 bool isPointRight(Line, Vector2f);
-
-//void DrawFrame(RenderWindow*, BulletManager*);
