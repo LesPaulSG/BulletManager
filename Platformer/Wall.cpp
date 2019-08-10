@@ -19,8 +19,7 @@ Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA(A), pointB(B), de
 	this->body_.setSize(Vector2f(5, lenght));
 	if (destructable) {
 		this->body_.setFillColor(Color::Yellow);
-	}
-	else {
+	} else {
 		this->body_.setFillColor(Color::Green);
 	}
 }
@@ -45,6 +44,15 @@ void Wall::CalculateRotation() {
 		angle *= -1;
 	}
 	this->body_.setRotation(angle);
+}
+
+void Wall::Transform() {
+	this->destructable_ = !this->destructable_;
+	if (this->destructable_) {
+		this->body_.setFillColor(Color::Yellow);
+	} else {
+		this->body_.setFillColor(Color::Green);
+	}
 }
 
 Wall::~Wall() {

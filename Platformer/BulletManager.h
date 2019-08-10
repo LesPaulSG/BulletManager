@@ -1,7 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include <vector>
-#include <thread>
 #include "Bullet.h"
 #include "Wall.h"
 #include "Definitions.h"
@@ -16,10 +14,10 @@ public:
 	std::vector<Wall>* GetWalls();
 
 	void AddWall(Wall*);
-	void CreateWall(Vector2f, Vector2f);
+	void CreateWall(Vector2f, Vector2f, bool);
 	void Update(float);
-	//void UpdateThread(int, int, float);
 	void Fire(Vector2f, Vector2f, float, float);
+	void WallTrancform();
 
 	BulletManager();
 	~BulletManager();

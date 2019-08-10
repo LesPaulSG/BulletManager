@@ -36,17 +36,19 @@ int main()
 	for (int i = 0; i < quantity; ++i) {
 		int A, B, C, D;
 		fin >> A >> B >> C >> D;
-		bulletManager.AddWall(&Wall(Vector2f(A, B), Vector2f(C, D)));
+		bulletManager.CreateWall(Vector2f(A, B), Vector2f(C, D), false);
 	}
 	fin.close();
 
 	std::thread bMThread;
 
-	while (window.isOpen())
-	{
+	while (window.isOpen()){
+		if (Keyboard::isKeyPressed(Keyboard::T)) {
+			bulletManager.WallTrancform();
+		}
+
 		Event event;
-		while (window.pollEvent(event))
-		{
+		while (window.pollEvent(event)){
 			if (event.type == Event::Closed) {
 				window.close();
 			}
@@ -70,7 +72,7 @@ int main()
 				}
 				else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();
-					bMThread = std::thread(&BulletManager::CreateWall, &bulletManager, Vector2f(RmbStartPos), Vector2f(RmbReleasedPos));	//build a wall when RMB released
+					bMThread = std::thread(&BulletManager::CreateWall, &bulletManager, Vector2f(RmbStartPos), Vector2f(RmbReleasedPos), true);	//build a wall when RMB released
 					bMThread.detach();
 				}
 			}

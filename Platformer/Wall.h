@@ -16,6 +16,7 @@ public:
 
 	void CalculateVector();
 	void CalculateRotation();
+	void Transform();
 
 	Wall(Vector2f, Vector2f);
 	Wall(Vector2f, Vector2f, bool);

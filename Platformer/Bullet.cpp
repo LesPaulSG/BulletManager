@@ -8,7 +8,7 @@
 Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime) : pos_(pos), dir_(dir), speed_(speed), lifeTime_(lifeTime), time_(0), alive_(true) {
 	this->body_.setPosition(pos);
 	this->body_.setOrigin(Vector2f(this->body_.getOrigin().x + 5.0, this->body_.getOrigin().y + 5.0));
-	this->body_.setRadius(10.0);
+	this->body_.setRadius(10);
 	this->body_.setFillColor(Color::Red);
 }
 
@@ -20,18 +20,19 @@ bool Bullet::GetAlive() {
 	return this->alive_;
 }
 
-void Bullet::CheckCollision(float time, int start, int end, std::vector<Wall>* walls, Vector2f oldPos) {
-	for (std::vector<Wall>::iterator iter = walls->begin() + start; iter != walls->begin() + end; ++iter) {
+void Bullet::CheckCollision(float time, std::vector<Wall> * walls, Vector2f oldPos) {
+	for (std::vector<Wall>::iterator iter = walls->begin(); iter != walls->end(); ++iter) {
 		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB)); //if no intersection returns (-9999, -9999)
-		if (iPoint.x > -1000 && iPoint.y > -100) {													//checks for intersection
+		if (iPoint.x > -1000 && iPoint.y > -1000) {													//checks for intersection
 			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB));
 			this->ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
-			this->pos_ = iPoint + this->dir_ * this->speed_ * time;	//update positon to intersection point + update distance
+			this->pos_ = iPoint + this->dir_ * 0.00001f;	//update positon to intersection point + small distance
 			this->body_.setPosition(this->pos_);
 			if (iter->GetDestructable()) {
 				walls->erase(iter);
 				break;
 			}
+			CheckCollision(time, walls, oldPos);
 		}
 	}
 }
@@ -41,19 +42,7 @@ void Bullet::Update(float time, std::vector<Wall> * walls) {
 	this->pos_ += this->dir_ * this->speed_ * time;	//new position
 	this->body_.setPosition(this->pos_);
 
-	for (std::vector<Wall>::iterator iter = walls->begin(); iter != walls->end(); ++iter) {
-		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB)); //if no intersection returns (-9999, -9999)
-		if (iPoint.x != -9999.0 && iPoint.y != -9999.0) {													//checks for intersection
-			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB));
-			this->ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
-			this->pos_ = iPoint + this->dir_ * this->speed_ * time;	//update positon to intersection point + update distance
-			this->body_.setPosition(this->pos_);
-			if (iter->GetDestructable()) {
-				walls->erase(iter);
-				break;
-			}
-		}
-	}
+	CheckCollision(time, walls, oldPos);
 
 	this->speed_ -= time;	
 	this->time_ += time;	
