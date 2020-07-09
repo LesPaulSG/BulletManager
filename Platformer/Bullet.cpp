@@ -28,6 +28,7 @@ void Bullet::CheckCollision(float time, std::vector<Wall> * walls, Vector2f oldP
 			this->ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
 			this->pos_ = iPoint + this->dir_ * 0.00001f;	//update positon to intersection point + small distance
 			this->body_.setPosition(this->pos_);
+			this->speed_ *= 0.9;
 			if (iter->GetDestructable()) {
 				walls->erase(iter);
 				break;
@@ -44,9 +45,12 @@ void Bullet::Update(float time, std::vector<Wall> * walls) {
 
 	CheckCollision(time, walls, oldPos);
 
-	this->speed_ -= time;	
+	this->speed_ -= time/10;	
 	this->time_ += time;	
 	if (this->time_ >= this->lifeTime_) {
+		this->alive_ = false;
+	}
+	else if (this->speed_ <= 0) {
 		this->alive_ = false;
 	}
 }

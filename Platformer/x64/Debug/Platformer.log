@@ -1,14 +1,13 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Bullet.cpp
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,92): warning C4244:  'argument': conversion from 'double' to 'T', possible loss of data
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,92): warning C4244:         with
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,92): warning C4244:         [
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,92): warning C4244:             T=float
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,92): warning C4244:         ]
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,59): warning C4244:  'argument': conversion from 'double' to 'T', possible loss of data
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,59): warning C4244:         with
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,59): warning C4244:         [
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,59): warning C4244:             T=float
-C:\Users\RTX\Documents\BulletManager\BulletManager\Platformer\Bullet.cpp(10,59): warning C4244:         ]
-  LINK : C:\Users\RTX\Documents\BulletManager\BulletManager\x64\Debug\BulletManager.exe not found or not built by the last incremental link; performing full link
-  Platformer.vcxproj -> C:\Users\RTX\Documents\BulletManager\BulletManager\x64\Debug\BulletManager.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(459,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  IO_Thread.cpp
+C:\Users\RTX\Downloads\BulletManager-master\Platformer\IO_Thread.cpp(63,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\RTX\Downloads\BulletManager-master\Platformer\IO_Thread.cpp(64,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+  Platformer.vcxproj -> C:\Users\RTX\Downloads\BulletManager-master\x64\Debug\BulletManager.exe

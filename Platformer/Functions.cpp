@@ -74,3 +74,12 @@ bool isPointRight(Line line, Vector2f point) {
 	}
 	return true;
 }
+
+void FormatText(Text* t) {
+	Font font;
+	font.loadFromFile("OpenSans-Bold.ttf");
+	t->setPosition(5, 5);
+	t->setFont(font);
+	t->setFillColor(Color::Red);
+	t->setCharacterSize(16);
+}
