@@ -1,8 +1,6 @@
 #include "BulletManager.h"
 #include <iostream>
 #include <cmath>
-
-#include <ctime>
 #include <mutex>
 
 std::mutex mtx;
@@ -26,6 +24,10 @@ bool BulletManager::GetProcessed() {
 
 bool BulletManager::GetUpdated() {
 	return this->updated;
+}
+
+std::condition_variable* BulletManager::GetCv() {
+	return &this->cv;
 }
 
 void BulletManager::AddWall(Wall* wall) {
@@ -60,7 +62,7 @@ void BulletManager::CreateWall(Vector2f start, Vector2f end, bool destructable) 
 
 void BulletManager::Update(float time) {
 	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this]{return GetProcessed();});
+	cv.wait(lock, [this]{return processed; });
 
 	this->updated = false;
 
@@ -88,6 +90,10 @@ void BulletManager::Fire(Vector2f pos, Vector2f dir, float speed, float lifeTime
 
 	this->processed = true;
 	this->cv.notify_one();
+}
+
+void BulletManager::SetProcessed(bool nP) {
+	this->processed = nP;
 }
 
 void BulletManager::WallTrancform() {

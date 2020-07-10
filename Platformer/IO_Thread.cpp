@@ -4,38 +4,25 @@
 
 std::mutex mtxIO;
 
-const int HEIGHT = VideoMode::getDesktopMode().height;
-const int WIDTH = VideoMode::getDesktopMode().width;
-
 Vector2i LmbStartPos, RmbStartPos;			//mouse positions for firing
 Vector2i LmbReleasedPos, RmbReleasedPos;	//and creating walls
 
 void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
-	Text bullets, walls, fps;
-	Font font;
-	font.loadFromFile("OpenSans-Bold.ttf");
-	bullets.setPosition(5, 5);
-	bullets.setFont(font);
-	bullets.setFillColor(Color::Red);
-	bullets.setCharacterSize(16);
-	walls.setPosition(5, 23);
-	walls.setFont(font);
-	walls.setFillColor(Color::Red);
-	walls.setCharacterSize(16);
-	fps.setPosition(5, 43);
-	fps.setFont(font);
-	fps.setFillColor(Color::Red);
-	fps.setCharacterSize(16);
+	Font font;									//text obj for UI
+	font.loadFromFile("OpenSans-Bold.ttf");		//
+	Text ui("",font,16);						//
+	ui.setPosition(5, 5);						//
+	ui.setFillColor(Color::Red);				//
 
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "BulletManager", Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 
 	std::chrono::duration<float> time;
-	auto t_start = std::chrono::high_resolution_clock::now();
-	auto t_end = t_start;
+	auto start = std::chrono::high_resolution_clock::now();
+	auto end = start;
 
 	while (true) {
-		t_start = std::chrono::high_resolution_clock::now();
+		start = std::chrono::high_resolution_clock::now();
 
 		if (Keyboard::isKeyPressed(Keyboard::P)) {
 			bm->WallTrancform();
@@ -72,9 +59,7 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 
 		window.clear();
 
-		//std::unique_lock<std::mutex> lock(mtxIO);
-		//bm->cv.wait(lock, [bm] {return bm->GetUpdated(); });
-		bm->processed = false;
+		bm->SetProcessed(false);
 
 		for (std::vector<Wall>::iterator iter = bm->GetWalls()->begin(); iter != bm->GetWalls()->end(); ++iter) {
 			window.draw(iter->GetBody());
@@ -83,29 +68,22 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 			window.draw(iter->GetBody());
 		}
 
-		bullets.setString("bullest:  " + std::to_string(bm->GetBullets()->size()));
-		walls.setString("walls:     " + std::to_string(bm->GetWalls()->size()));
-		fps.setString("fps:         " + std::to_string(1 / time.count())
-					+ "\npFps:       " + std::to_string(1 / t->count()));
+		ui.setString("bullest:  " + std::to_string(bm->GetBullets()->size())	//bullets quantity
+					+ "\nwalls:     " + std::to_string(bm->GetWalls()->size())	//walls quantity
+					+ "\nfps:         " + std::to_string(1 / time.count())		//GUI FPS
+					+ "\npFps:       " + std::to_string(1 / t->count()));		//physics FPS
 
-		//lock.unlock();
+		bm->SetProcessed(true);
+		bm->GetCv()->notify_one();
 
-		bm->processed = true;
-		bm->cv.notify_one();
-
-		window.draw(bullets);
-		window.draw(walls);
-		window.draw(fps);
+		window.draw(ui);
 		window.display();
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-			std::unique_lock<std::mutex> lock(mtxIO);
-			bm->cv.wait(lock, [bm] {return bm->GetUpdated(); });
-			window.close();
 			*gameOver = true;
 		}
 
-		t_end = std::chrono::high_resolution_clock::now();
-		time = t_end - t_start;
+		end = std::chrono::high_resolution_clock::now();
+		time = end - start;
 	}
 }

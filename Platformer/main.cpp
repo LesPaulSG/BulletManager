@@ -1,15 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
-#include <chrono>
 #include <SFML/Graphics.hpp>
 #include "BulletManager.h"
 #include "IO_Thread.h"
 
 using namespace sf;
-
-const int HEIGHT = VideoMode::getDesktopMode().height;
-const int WIDTH = VideoMode::getDesktopMode().width;
 
 int main(){
 	BulletManager bulletManager;
@@ -36,20 +32,20 @@ int main(){
 	fin.close();
 
 	std::chrono::duration<float> time;
-	auto t_start = std::chrono::high_resolution_clock::now();
-	auto t_end = t_start;
+	auto start = std::chrono::high_resolution_clock::now();
+	auto end = start;
 	bool gameOver = false;
 
-	std::thread IOThread(input, &bulletManager, & time, & gameOver);
+	std::thread IOThread(input, &bulletManager, & time, & gameOver);		//input output thread
 	IOThread.detach();
 
 	while (!gameOver){
-		t_start = std::chrono::high_resolution_clock::now();
+		start = std::chrono::high_resolution_clock::now();
 
 		bulletManager.Update(time.count());
 
-		t_end = std::chrono::high_resolution_clock::now();
-		time = t_end - t_start;
+		end = std::chrono::high_resolution_clock::now();
+		time = end - start;
 	}
 
 	return 0;

@@ -1,58 +1,15 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(411,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Bullet.cpp
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\Bullet.cpp(9): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-  BulletManager.cpp
-  Functions.cpp
-  main.cpp
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(20): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(21): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(21): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(22): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(23): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(37): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(57): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(459,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  IO_Thread.cpp
+C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(13,30): error C2365: 'time': redefinition; previous definition was 'function'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\time.h(532): message : see declaration of 'time'
+C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(52,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(58): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(53,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\main.cpp(69): warning C4305: 'argument': truncation from 'double' to 'float'
-  Wall.cpp
-C:\Users\GTX\Documents\NewBM\New folder\BulletManager\Platformer\Wall.cpp(47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 353 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  Platformer.vcxproj -> C:\Users\GTX\Documents\NewBM\New folder\BulletManager\x64\Release\BulletManager.exe
+C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(92,8): error C2659: '=': function as left operand
