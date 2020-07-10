@@ -32,7 +32,7 @@ void BulletManager::AddWall(Wall* wall) {
 	this->processed = false;
 
 	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this] {return GetUpdated(); });
+	cv.wait(lock, [this] {return updated; });
 
 	if (this->walls_.size() < WALLS_MAX_CAPACITY) {
 		this->walls_.push_back(*wall);
@@ -46,7 +46,7 @@ void BulletManager::CreateWall(Vector2f start, Vector2f end, bool destructable) 
 	this->processed = false;
 
 	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this] {return GetUpdated(); });
+	cv.wait(lock, [this] {return updated; });
 
 	if (this->walls_.size() < WALLS_MAX_CAPACITY) {
 		if (LenghtOfLine(start, end) > 10) {	//check lengtn of wall for visible value
@@ -80,10 +80,10 @@ void BulletManager::Fire(Vector2f pos, Vector2f dir, float speed, float lifeTime
 	this->processed = false;
 
 	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this] {return GetUpdated(); });
+	cv.wait(lock, [this] {return updated; });
 
 	if (this->bullets_.size() < BULLETS_MAX_CAPACITY) {
-		this->bullets_.push_back(Bullet(pos, dir, std::min(speed, 80.f), lifeTime));
+		this->bullets_.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime));
 	}
 
 	this->processed = true;

@@ -36,17 +36,19 @@ int main(){
 	fin.close();
 
 	std::chrono::duration<float> time;
+	auto t_start = std::chrono::high_resolution_clock::now();
+	auto t_end = t_start;
 	bool gameOver = false;
 
-	std::thread IOThread(input, &bulletManager, &time, &gameOver);
+	std::thread IOThread(input, &bulletManager, & time, & gameOver);
 	IOThread.detach();
 
 	while (!gameOver){
-		auto t_start = std::chrono::high_resolution_clock::now();
+		t_start = std::chrono::high_resolution_clock::now();
 
 		bulletManager.Update(time.count());
 
-		auto t_end = std::chrono::high_resolution_clock::now();
+		t_end = std::chrono::high_resolution_clock::now();
 		time = t_end - t_start;
 	}
 

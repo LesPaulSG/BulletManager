@@ -1,13 +1,13 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(459,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   IO_Thread.cpp
-C:\Users\RTX\Downloads\BulletManager-master\Platformer\IO_Thread.cpp(63,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(60,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\RTX\Downloads\BulletManager-master\Platformer\IO_Thread.cpp(64,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(61,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=int
           ]
-  Platformer.vcxproj -> C:\Users\RTX\Downloads\BulletManager-master\x64\Debug\BulletManager.exe
+  Platformer.vcxproj -> C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\x64\Debug\BulletManager.exe

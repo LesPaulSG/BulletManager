@@ -27,5 +27,3 @@ Vector2f Intersection(Line, Line);
 float AngleOfIntersec(Line, Line);
 
 bool isPointRight(Line, Vector2f);
-
-void FormatText(Text*);
