@@ -23,7 +23,7 @@ public:
 	void AddWall(Wall*);
 	void CreateWall(Vector2f, Vector2f, bool);
 	void Update(float);
-	void Fire(Vector2f, Vector2f, float, float);
+	void Fire(Vector2f, Vector2f, float, float, Sound);
 	void WallTrancform();
 	void SetProcessed(bool);
 

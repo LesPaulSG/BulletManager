@@ -1,6 +1,7 @@
 #include "IO_Thread.h"
 #include <iostream>
 #include <mutex>
+#include <SFML\Audio.hpp>
 
 std::mutex mtxIO;
 
@@ -13,6 +14,13 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 	Text ui("",font,16);						//
 	ui.setPosition(5, 5);						//
 	ui.setFillColor(Color::Red);				//
+
+	SoundBuffer sb, rb;
+	sb.loadFromFile("shot.wav");
+	rb.loadFromFile("ric.wav");
+	Sound shot, ric;
+	shot.setBuffer(sb);
+	ric.setBuffer(rb);
 
 	RenderWindow window(VideoMode(WIDTH, HEIGHT), "BulletManager", Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
@@ -48,7 +56,8 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 					float y = LmbReleasedPos.y - LmbStartPos.y;
 					Vector2f direction(x, y);
 					float speed = (sqrt((x * x) + (y * y)))/100;
-					bm->Fire(Vector2f(LmbStartPos), direction, speed, 30);//firing when LMB released
+					bm->Fire(Vector2f(LmbStartPos), direction, speed, 30, ric);//firing when LMB released
+					shot.play();
 				}
 				else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();

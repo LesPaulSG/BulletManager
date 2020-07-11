@@ -78,14 +78,14 @@ void BulletManager::Update(float time) {
 	cv.notify_one();
 }
 
-void BulletManager::Fire(Vector2f pos, Vector2f dir, float speed, float lifeTime) {
+void BulletManager::Fire(Vector2f pos, Vector2f dir, float speed, float lifeTime, Sound s) {
 	this->processed = false;
 
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [this] {return updated; });
 
 	if (this->bullets_.size() < BULLETS_MAX_CAPACITY) {
-		this->bullets_.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime));
+		this->bullets_.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime, s));
 	}
 
 	this->processed = true;

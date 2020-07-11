@@ -1,11 +1,10 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <thread>
 #include "Bullet.h"
 #include "Wall.h"
 #include "Definitions.h"
 
-Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime) : pos_(pos), dir_(dir), speed_(speed), lifeTime_(lifeTime), time_(0), alive_(true) {
+Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime, Sound s) : pos_(pos), dir_(dir), speed_(speed), lifeTime_(lifeTime), time_(0), alive_(true), ric(s) {
 	this->body_.setPosition(pos);
 	this->body_.setOrigin(Vector2f(this->body_.getOrigin().x + 5.0, this->body_.getOrigin().y + 5.0));
 	this->body_.setRadius(10);
@@ -29,6 +28,7 @@ void Bullet::CheckCollision(float time, std::vector<Wall> * walls, Vector2f oldP
 			this->pos_ = iPoint + this->dir_ * 0.00001f;	//update positon to intersection point + small distance
 			this->body_.setPosition(this->pos_);
 			this->speed_ *= 0.95;                           //-5% of speed every collision
+			ric.play();
 			if (iter->GetDestructable()) {
 				walls->erase(iter);
 				break;

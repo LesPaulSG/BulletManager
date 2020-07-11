@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Wall.h"
 
 class Bullet {
@@ -11,6 +12,7 @@ private:
 	Vector2f pos_;
 	Vector2f dir_;
 	bool alive_;
+	Sound ric;
 
 public:
 	CircleShape GetBody();
@@ -20,6 +22,6 @@ public:
 	void Update(float, std::vector<Wall>*);
 	void ChangeDirection(float, bool);
 
-	Bullet(Vector2f, Vector2f, float, float);
+	Bullet(Vector2f, Vector2f, float, float, Sound);
 	~Bullet();
 };
