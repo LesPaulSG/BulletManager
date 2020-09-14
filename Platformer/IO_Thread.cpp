@@ -2,10 +2,13 @@
 #include <iostream>
 #include <mutex>
 
+#include "Player.h"
+
 std::mutex mtxIO;
 
 Vector2i LmbStartPos, RmbStartPos;			//mouse positions for firing
 Vector2i LmbReleasedPos, RmbReleasedPos;	//and creating walls
+Vector2i lookAt(0,0);
 
 void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 	Font font;									//text obj for UI
@@ -21,36 +24,54 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 	auto start = std::chrono::high_resolution_clock::now();
 	auto end = start;
 
+	std::cout << "test" << std::endl;
+	Player player(Vector2f(960, 540), 0);
+
 	while (true) {
 		start = std::chrono::high_resolution_clock::now();
+
+		if (lookAt != Mouse::getPosition()) {
+			lookAt = Mouse::getPosition();
+			player.Rotate(Vector2f(lookAt));
+		}
 
 		if (Keyboard::isKeyPressed(Keyboard::P)) {
 			bm->WallTrancform();
 		}
 
+		if (Keyboard::isKeyPressed(Keyboard::W)) {
+			player.Move(FWD);
+		} else if (Keyboard::isKeyPressed(Keyboard::S)) {
+			player.Move(BWD);
+		} else if (Keyboard::isKeyPressed(Keyboard::D)) {
+			player.Move(RGH);
+		} else if (Keyboard::isKeyPressed(Keyboard::A)) {
+			player.Move(LFT);
+		} else {
+			//player.SetRotation(AngleOfIntersec(Line(Vector2f(0, 0), Vector2f(0, 1)), Line(player.GetPosition(), Vector2f(Mouse::getPosition()))));
+		}
+
 		Event event;
 		while (window.pollEvent(event)) {
+			//player.SetRotation(AngleOfIntersec(Line(Vector2f(0, 0), Vector2f(0, 1)), Line(player.GetPosition(), Vector2f(Mouse::getPosition()))));
 			if (event.type == Event::Closed) {
 				window.close();
-			}
-			else if (event.type == Event::MouseButtonPressed) {
+			} else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbStartPos = Mouse::getPosition();					//save coordinates of LMB pressed
+				} else if (event.mouseButton.button == Mouse::Right) {
+					RmbStartPos = Mouse::getPosition();					//save coordinates of RMB pressed		
+					//player.Rotate(Vector2f(RmbStartPos));
 				}
-				else if (event.mouseButton.button == Mouse::Right) {
-					RmbStartPos = Mouse::getPosition();					//save coordinates of RMB pressed
-				}
-			}
-			else if (event.type == Event::MouseButtonReleased) {
+			} else if (event.type == Event::MouseButtonReleased) {
 				if (event.mouseButton.button == Mouse::Left) {
 					LmbReleasedPos = Mouse::getPosition();
-					float x = LmbReleasedPos.x - LmbStartPos.x;
-					float y = LmbReleasedPos.y - LmbStartPos.y;
+					float x = LmbReleasedPos.x - player.GetPosition().x;
+					float y = LmbReleasedPos.y - player.GetPosition().y;
 					Vector2f direction(x, y);
-					float speed = (sqrt((x * x) + (y * y)))/100;
-					bm->Fire(Vector2f(LmbStartPos), direction, speed, 30);//firing when LMB released
-				}
-				else if (event.mouseButton.button == Mouse::Right) {
+					float speed = 10;
+					bm->Fire(player.GetPosition(), direction, speed, 30);//firing when LMB released
+				} else if (event.mouseButton.button == Mouse::Right) {
 					RmbReleasedPos = Mouse::getPosition();
 					bm->CreateWall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos), true);//build a wall when RMB released
 				}
@@ -67,6 +88,10 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 		for (std::vector<Bullet>::iterator iter = bm->GetBullets()->begin(); iter != bm->GetBullets()->end(); ++iter) {
 			window.draw(iter->GetBody());
 		}
+
+		window.draw(player.GetBody());
+		window.draw(player.GetFwdVecBody());
+		window.draw(player.GetRghVecBody());
 
 		ui.setString("bullest:  " + std::to_string(bm->GetBullets()->size())	//bullets quantity
 					+ "\nwalls:     " + std::to_string(bm->GetWalls()->size())	//walls quantity

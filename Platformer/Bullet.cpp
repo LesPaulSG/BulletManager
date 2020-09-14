@@ -56,11 +56,13 @@ void Bullet::Update(float time, std::vector<Wall> * walls) {
 }
 
 void Bullet::ChangeDirection(float beta, bool right) {
-	float alpha = 90 - beta;			//calculate alpha angle	
-	float angle = 180 - (2 * alpha);	//rotation angle
+	std::cout << beta << "   ";
+	float alpha = 1.5708 - beta;			//calculate alpha angle	
+	float angle = 3.14159 - (2.0 * alpha);	//rotation angle
 	if (!right) {
 		angle *= -1;
 	}
+	std::cout << angle << std::endl;
 	float xNew = this->dir_.x * cos(angle) - this->dir_.y * sin(angle);
 	float yNew = this->dir_.x * sin(angle) + this->dir_.y * cos(angle);
 	this->dir_.x = xNew;

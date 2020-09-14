@@ -1,75 +1,17 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(459,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  IO_Thread.cpp
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(47,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\IO_Thread.cpp(48,14): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=int
-          ]
-  main.cpp
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(13,40): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Platformer.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Bullet.cpp
+C:\Users\Админ\Documents\VS Code\BulletManager\Platformer\Bullet.cpp(10,92): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(14,28): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\Админ\Documents\VS Code\BulletManager\Platformer\Bullet.cpp(10,59): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(14,57): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(14,52): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(15,35): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(16,24): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(16,49): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(16,42): warning C4244: 'argument': conversion from 'const int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(30,40): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(30,37): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(30,56): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\Platformer\main.cpp(30,53): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-  Generating Code...
-  Platformer.vcxproj -> C:\Users\RTX\Documents\BulletManager\bm2\BulletManager\x64\Debug\BulletManager.exe
+C:\Users\Админ\Documents\VS Code\BulletManager\Platformer\Bullet.cpp(31,24): warning C4305: '*=': truncation from 'double' to 'float'
+C:\Users\Админ\Documents\VS Code\BulletManager\Platformer\Bullet.cpp(60,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Админ\Documents\VS Code\BulletManager\Platformer\Bullet.cpp(61,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  LINK : C:\Users\Админ\Documents\VS Code\BulletManager\x64\Debug\BulletManager.exe not found or not built by the last incremental link; performing full link
+  Platformer.vcxproj -> C:\Users\Админ\Documents\VS Code\BulletManager\x64\Debug\BulletManager.exe

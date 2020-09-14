@@ -60,6 +60,8 @@ float AngleOfIntersec(Line A, Line B) {
 	second.x = B.pointB.x - B.pointA.x;	//
 	second.y = B.pointB.y - B.pointA.y;	//
 
+	std::cout << A.pointA.x << " " << A.pointA.y << "; " << A.pointB.x << " " << A.pointB.y << ";\n" << B.pointA.x << " " << B.pointA.y << "; " << B.pointB.x << " " << B.pointB.y << std::endl;
+
 	float fMod = std::sqrt(first.x * first.x + first.y * first.y);		//vectors' modules
 	float sMod = std::sqrt(second.x * second.x + second.y * second.y);	//
 
