@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <iostream>
+#include "Wall.h"
 
 Player::Player(sf::Vector2f pos, float cRotation) : pos(pos), rotation(0.0f) {
 	forwardVector = sf::Vector2f(0, -1);
@@ -48,7 +49,8 @@ void Player::Rotate(sf::Vector2f mousePos){
 	Rotate(angle);
 }
 
-void Player::Move(MoveDir dir){
+void Player::Move(MoveDir dir, float time, std::vector<Wall>* walls){
+	Vector2f oldPos = pos;
 	switch (dir){
 	case FWD:
 		pos += forwardVector * 5.0f;
@@ -65,9 +67,28 @@ void Player::Move(MoveDir dir){
 	default:
 		break;
 	}
+	CheckCollision(time, walls, oldPos);
 	body.setPosition(pos);
 	fwdVecBody.setPosition(pos + forwardVector);
 	rghVecBody.setPosition(pos + rightVector);
+}
+
+void Player::CheckCollision(float time, std::vector<Wall>* walls, Vector2f oldPos) {
+	for (std::vector<Wall>::iterator iter = walls->begin(); iter != walls->end(); ++iter) {
+		Vector2f iPoint = Intersection(Line(oldPos, pos), Line(iter->pointA, iter->pointB)); //if no intersection returns (-9999, -9999)
+		if (iPoint.x > -1000 && iPoint.y > -1000) {													//checks for intersection
+			float angle = AngleOfIntersec(Line(oldPos, pos), Line(iter->pointA, iter->pointB));
+			//ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
+			pos = iPoint + forwardVector * 0.00001f;	//update positon to intersection point + small distance
+			body.setPosition(pos);
+			//speed *= 0.95;                           //-5% of speed every collision
+			if (iter->GetDestructable()) {
+				walls->erase(iter);
+				break;
+			}
+			CheckCollision(time, walls, oldPos);
+		}
+	}
 }
 
 sf::CircleShape Player::GetBody(){

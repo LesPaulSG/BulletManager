@@ -40,13 +40,13 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::W)) {
-			player.Move(FWD);
+			player.Move(FWD, time.count(), bm->GetWalls());
 		} else if (Keyboard::isKeyPressed(Keyboard::S)) {
-			player.Move(BWD);
+			player.Move(BWD, time.count(), bm->GetWalls());
 		} else if (Keyboard::isKeyPressed(Keyboard::D)) {
-			player.Move(RGH);
+			player.Move(RGH, time.count(), bm->GetWalls());
 		} else if (Keyboard::isKeyPressed(Keyboard::A)) {
-			player.Move(LFT);
+			player.Move(LFT, time.count(), bm->GetWalls());
 		} else {
 			//player.SetRotation(AngleOfIntersec(Line(Vector2f(0, 0), Vector2f(0, 1)), Line(player.GetPosition(), Vector2f(Mouse::getPosition()))));
 		}

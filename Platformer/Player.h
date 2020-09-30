@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 
 #include "Definitions.h"
+#include "Wall.h"
 
 enum MoveDir{ FWD, BWD, RGH, LFT };
 
@@ -22,7 +23,8 @@ public:
 
 	void Rotate(float angle);
 	void Rotate(sf::Vector2f mousePos);
-	void Move(MoveDir dir);
+	void Move(MoveDir dir, float time, std::vector<Wall>* walls);
+	void CheckCollision(float time, std::vector<Wall>* walls, Vector2f oldPos);
 
 	sf::CircleShape GetBody();
 	sf::RectangleShape GetFwdVecBody();
