@@ -1,25 +1,26 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
 #include "Wall.h"
 
 class Bullet {
 private:
-	CircleShape body_;
-	float speed_;
-	float time_;
-	float lifeTime_;
-	Vector2f pos_;
-	Vector2f dir_;
-	bool alive_;
+	sf::CircleShape body;
+	float speed;
+	float time;
+	float lifeTime;
+	sf::Vector2f pos;
+	sf::Vector2f dir;
+	bool alive;
 
 public:
-	CircleShape GetBody();
+	sf::CircleShape GetBody();
 	bool GetAlive();
 
-	void CheckCollision(float, std::vector<Wall>*, Vector2f);
-	void Update(float, std::vector<Wall>*);
-	void ChangeDirection(float, bool);
-
-	Bullet(Vector2f, Vector2f, float, float);
+	Bullet(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime);
 	~Bullet();
+
+	void CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f oldPos);
+	void Update(float t, std::vector<Wall>* walls);
+	void ChangeDirection(float beta, bool right);
 };

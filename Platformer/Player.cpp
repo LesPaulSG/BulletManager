@@ -1,6 +1,7 @@
-#include "Player.h"
 #include <iostream>
+
 #include "Wall.h"
+#include "Player.h"
 
 Player::Player(sf::Vector2f pos, float cRotation) : pos(pos), rotation(0.0f) {
 	forwardVector = sf::Vector2f(0, -1);
@@ -41,7 +42,7 @@ void Player::Rotate(float angle){
 }
 
 void Player::Rotate(sf::Vector2f mousePos){
-	float angle = AngleOfIntersec(Line(Vector2f(0, 0), Vector2f(1920, 0)), Line(pos, mousePos));
+	float angle = AngleOfIntersec(Line(sf::Vector2f(0, 0), sf::Vector2f(1920, 0)), Line(pos, mousePos));
 	angle += 3.14159;
 	if (mousePos.y < pos.y) {
 		angle *= -1.0;
@@ -50,7 +51,7 @@ void Player::Rotate(sf::Vector2f mousePos){
 }
 
 void Player::Move(MoveDir dir, float time, std::vector<Wall>* walls){
-	Vector2f oldPos = pos;
+	sf::Vector2f oldPos = pos;
 	switch (dir){
 	case FWD:
 		pos += forwardVector * 5.0f;
@@ -73,15 +74,13 @@ void Player::Move(MoveDir dir, float time, std::vector<Wall>* walls){
 	rghVecBody.setPosition(pos + rightVector);
 }
 
-void Player::CheckCollision(float time, std::vector<Wall>* walls, Vector2f oldPos) {
-	for (std::vector<Wall>::iterator iter = walls->begin(); iter != walls->end(); ++iter) {
-		Vector2f iPoint = Intersection(Line(oldPos, pos), Line(iter->pointA, iter->pointB)); //if no intersection returns (-9999, -9999)
+void Player::CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f oldPos) {
+	for (auto iter = walls->begin(); iter != walls->end(); ++iter) {
+		sf::Vector2f iPoint = Intersection(Line(oldPos, pos), Line(*iter->GetLine())); //if no intersection returns (-9999, -9999)
 		if (iPoint.x > -1000 && iPoint.y > -1000) {													//checks for intersection
-			float angle = AngleOfIntersec(Line(oldPos, pos), Line(iter->pointA, iter->pointB));
-			//ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
+			float angle = AngleOfIntersec(Line(oldPos, pos), Line(*iter->GetLine()));
 			pos = iPoint + forwardVector * 0.00001f;	//update positon to intersection point + small distance
 			body.setPosition(pos);
-			//speed *= 0.95;                           //-5% of speed every collision
 			if (iter->GetDestructable()) {
 				walls->erase(iter);
 				break;
@@ -107,16 +106,10 @@ sf::Vector2f Player::GetPosition(){
 	return pos;
 }
 
-sf::Vector2f Player::GetForwardVector()
-{
+sf::Vector2f Player::GetForwardVector(){
 	return forwardVector;
 }
 
 void Player::SetRotation(float angle){
-	std::cout << angle << "   ";
-	//float alpha = 90 - beta;			//calculate alpha angle	
-	//float angle = 180 - (2 * alpha);
-	//angle *= -(180 / 3.14);
-	//std::cout << angle << "   ";
 	Rotate(angle);
 }

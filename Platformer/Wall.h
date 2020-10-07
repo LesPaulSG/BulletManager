@@ -1,24 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Definitions.h"
+
+#include "Functions.h"
 
 class Wall {
 private:
-	bool destructable_;
-	RectangleShape body_;
-	Vector2f vector_;
+	bool destructable;
+	sf::RectangleShape body;
+	sf::Vector2f vector;
+	Line line;
 
 public:
-	Vector2f pointA, pointB;
+	Wall(sf::Vector2f, sf::Vector2f, bool);
+	~Wall();
 
 	bool GetDestructable();
-	RectangleShape GetBody();
+	sf::RectangleShape GetBody();
+	Line* GetLine();
 
-	void CalculateVector();
 	void CalculateRotation();
 	void Transform();
-
-	Wall(Vector2f, Vector2f);
-	Wall(Vector2f, Vector2f, bool);
-	~Wall();
 };

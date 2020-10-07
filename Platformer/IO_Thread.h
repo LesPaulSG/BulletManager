@@ -1,8 +1,9 @@
 #pragma once
 #include <SFML/System.hpp>
+
 #include "BulletManager.h"
 
-const int HEIGHT = VideoMode::getDesktopMode().height;
-const int WIDTH = VideoMode::getDesktopMode().width;
+const int HEIGHT = sf::VideoMode::getDesktopMode().height;
+const int WIDTH = sf::VideoMode::getDesktopMode().width;
 
-void input(BulletManager*, std::chrono::duration<float>*, bool*);
+void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver);

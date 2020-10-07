@@ -6,74 +6,70 @@
 
 std::mutex mtxIO;
 
-Vector2i LmbStartPos, RmbStartPos;			//mouse positions for firing
-Vector2i LmbReleasedPos, RmbReleasedPos;	//and creating walls
-Vector2i lookAt(0,0);
+sf::Vector2i LmbStartPos, RmbStartPos;			//mouse positions for firing
+sf::Vector2i LmbReleasedPos, RmbReleasedPos;	//and creating walls
+sf::Vector2i lookAt(0,0);
 
 void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
-	Font font;									//text obj for UI
+	sf::Font font;									//text obj for UI
 	font.loadFromFile("OpenSans-Bold.ttf");		//
-	Text ui("",font,16);						//
+	sf::Text ui("",font,16);						//
 	ui.setPosition(5, 5);						//
-	ui.setFillColor(Color::Red);				//
+	ui.setFillColor(sf::Color::Red);				//
 
-	RenderWindow window(VideoMode(WIDTH, HEIGHT), "BulletManager", Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "BulletManager", sf::Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 
 	std::chrono::duration<float> time;
 	auto start = std::chrono::high_resolution_clock::now();
 	auto end = start;
 
-	std::cout << "test" << std::endl;
-	Player player(Vector2f(960, 540), 0);
+	Player player(sf::Vector2f(960, 540), 0);
 
 	while (true) {
 		start = std::chrono::high_resolution_clock::now();
 
-		if (lookAt != Mouse::getPosition()) {
-			lookAt = Mouse::getPosition();
-			player.Rotate(Vector2f(lookAt));
+		if (lookAt != sf::Mouse::getPosition()) {
+			lookAt = sf::Mouse::getPosition();
+			player.Rotate(sf::Vector2f(lookAt));
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::P)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
 			bm->WallTrancform();
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::W)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 			player.Move(FWD, time.count(), bm->GetWalls());
-		} else if (Keyboard::isKeyPressed(Keyboard::S)) {
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 			player.Move(BWD, time.count(), bm->GetWalls());
-		} else if (Keyboard::isKeyPressed(Keyboard::D)) {
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 			player.Move(RGH, time.count(), bm->GetWalls());
-		} else if (Keyboard::isKeyPressed(Keyboard::A)) {
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 			player.Move(LFT, time.count(), bm->GetWalls());
-		} else {
-			//player.SetRotation(AngleOfIntersec(Line(Vector2f(0, 0), Vector2f(0, 1)), Line(player.GetPosition(), Vector2f(Mouse::getPosition()))));
 		}
 
-		Event event;
+		sf::Event event;
 		while (window.pollEvent(event)) {
-			//player.SetRotation(AngleOfIntersec(Line(Vector2f(0, 0), Vector2f(0, 1)), Line(player.GetPosition(), Vector2f(Mouse::getPosition()))));
-			if (event.type == Event::Closed) {
+			if (event.type == sf::Event::Closed) {
 				window.close();
-			} else if (event.type == Event::MouseButtonPressed) {
-				if (event.mouseButton.button == Mouse::Left) {
-					LmbStartPos = Mouse::getPosition();					//save coordinates of LMB pressed
-				} else if (event.mouseButton.button == Mouse::Right) {
-					RmbStartPos = Mouse::getPosition();					//save coordinates of RMB pressed		
-					//player.Rotate(Vector2f(RmbStartPos));
-				}
-			} else if (event.type == Event::MouseButtonReleased) {
-				if (event.mouseButton.button == Mouse::Left) {
-					LmbReleasedPos = Mouse::getPosition();
+			} else if (event.type == sf::Event::MouseButtonPressed) {
+				if (event.mouseButton.button == sf::Mouse::Left) {
+					LmbStartPos = sf::Mouse::getPosition();					//save coordinates of LMB pressed
+				}							
+			} else if (event.type == sf::Event::MouseButtonReleased) {
+				if (event.mouseButton.button == sf::Mouse::Left) {
+					LmbReleasedPos = sf::Mouse::getPosition();
 					float x = LmbReleasedPos.x - player.GetPosition().x;
 					float y = LmbReleasedPos.y - player.GetPosition().y;
-					Vector2f direction(x, y);
+					sf::Vector2f direction(x, y);
 					float speed = 10;
 					bm->Fire(player.GetPosition(), direction, speed, 30);//firing when LMB released
-				} else if (event.mouseButton.button == Mouse::Right) {
-					RmbReleasedPos = Mouse::getPosition();
-					bm->CreateWall(Vector2f(RmbStartPos), Vector2f(RmbReleasedPos), true);//build a wall when RMB released
+				} else if (event.mouseButton.button == sf::Mouse::Right) {
+					RmbReleasedPos = sf::Mouse::getPosition();
+					bm->CreateWall(sf::Vector2f(RmbStartPos), sf::Vector2f(RmbReleasedPos), true);//build a wall when RMB released
 				}
 			}
 		}
@@ -82,10 +78,10 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 
 		bm->SetProcessed(false);
 
-		for (std::vector<Wall>::iterator iter = bm->GetWalls()->begin(); iter != bm->GetWalls()->end(); ++iter) {
+		for (auto iter = bm->GetWalls()->begin(); iter != bm->GetWalls()->end(); ++iter) {
 			window.draw(iter->GetBody());
 		}
-		for (std::vector<Bullet>::iterator iter = bm->GetBullets()->begin(); iter != bm->GetBullets()->end(); ++iter) {
+		for (auto iter = bm->GetBullets()->begin(); iter != bm->GetBullets()->end(); ++iter) {
 			window.draw(iter->GetBody());
 		}
 
@@ -104,7 +100,7 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 		window.draw(ui);
 		window.display();
 
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 			*gameOver = true;
 		}
 

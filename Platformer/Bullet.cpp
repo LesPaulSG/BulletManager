@@ -1,34 +1,36 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <thread>
+
 #include "Bullet.h"
 #include "Wall.h"
-#include "Definitions.h"
+#include "Functions.h"
 
-Bullet::Bullet(Vector2f pos, Vector2f dir, float speed, float lifeTime) : pos_(pos), dir_(dir), speed_(speed), lifeTime_(lifeTime), time_(0), alive_(true) {
-	this->body_.setPosition(pos);
-	this->body_.setOrigin(Vector2f(this->body_.getOrigin().x + 5.0, this->body_.getOrigin().y + 5.0));
-	this->body_.setRadius(10);
-	this->body_.setFillColor(Color::Red);
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime)
+	: pos(pos), dir(dir), speed(speed), lifeTime(lifeTime), time(0), alive(true) {
+	body.setPosition(pos);
+	body.setOrigin(sf::Vector2f(body.getOrigin().x + 5.0, body.getOrigin().y + 5.0));
+	body.setRadius(10);
+	body.setFillColor(sf::Color::Red);
 }
 
-CircleShape Bullet::GetBody() {
-	return this->body_;
+sf::CircleShape Bullet::GetBody() {
+	return body;
 }
 
 bool Bullet::GetAlive() {
-	return this->alive_;
+	return alive;
 }
 
-void Bullet::CheckCollision(float time, std::vector<Wall> * walls, Vector2f oldPos) {
-	for (std::vector<Wall>::iterator iter = walls->begin(); iter != walls->end(); ++iter) {
-		Vector2f iPoint = Intersection(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB)); //if no intersection returns (-9999, -9999)
+void Bullet::CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f oldPos) {
+	for (auto iter = walls->begin(); iter != walls->end(); ++iter) {
+		sf::Vector2f iPoint = Intersection(Line(oldPos, pos), Line(*iter->GetLine()));				//if no intersection returns (-9999, -9999)
 		if (iPoint.x > -1000 && iPoint.y > -1000) {													//checks for intersection
-			float angle = AngleOfIntersec(Line(oldPos, this->pos_), Line(iter->pointA, iter->pointB));
-			this->ChangeDirection(angle, isPointRight(Line(iter->pointA, iter->pointB), oldPos));
-			this->pos_ = iPoint + this->dir_ * 0.00001f;	//update positon to intersection point + small distance
-			this->body_.setPosition(this->pos_);
-			this->speed_ *= 0.95;                           //-5% of speed every collision
+			float angle = AngleOfIntersec(Line(oldPos, pos), Line(*iter->GetLine()));
+			ChangeDirection(angle, isPointRight(Line(*iter->GetLine()), oldPos));
+			pos = iPoint + dir * 0.00001f;				//update positon to intersection point + small distance
+			body.setPosition(pos);
+			speed *= 0.95;								//-5% of speed every collision
 			if (iter->GetDestructable()) {
 				walls->erase(iter);
 				break;
@@ -38,37 +40,33 @@ void Bullet::CheckCollision(float time, std::vector<Wall> * walls, Vector2f oldP
 	}
 }
 
-void Bullet::Update(float time, std::vector<Wall> * walls) {
-	Vector2f oldPos = this->pos_;					//position before update
-	this->pos_ += this->dir_ * this->speed_ * time;	//new position
-	this->body_.setPosition(this->pos_);
+void Bullet::Update(float t, std::vector<Wall> * walls) {
+	sf::Vector2f oldPos = pos;							//position before update
+	pos += dir * speed * t;								//new position
+	body.setPosition(pos);
 
-	CheckCollision(time, walls, oldPos);
+	CheckCollision(t, walls, oldPos);
 
-	this->speed_ -= time/30;						//braking over time
-	this->time_ += time;	
-	if (this->time_ >= this->lifeTime_) {
-		this->alive_ = false;
+	speed -= t/30;										//braking over time
+	time += t;
+	if (time >= lifeTime) {
+		alive = false;
 	}
-	else if (this->speed_ <= 0) {
-		this->alive_ = false;
+	else if (speed <= 0) {
+		alive = false;
 	}
 }
 
 void Bullet::ChangeDirection(float beta, bool right) {
-	std::cout << beta << "   ";
 	float alpha = 1.5708 - beta;			//calculate alpha angle	
 	float angle = 3.14159 - (2.0 * alpha);	//rotation angle
 	if (!right) {
 		angle *= -1;
 	}
-	std::cout << angle << std::endl;
-	float xNew = this->dir_.x * cos(angle) - this->dir_.y * sin(angle);
-	float yNew = this->dir_.x * sin(angle) + this->dir_.y * cos(angle);
-	this->dir_.x = xNew;
-	this->dir_.y = yNew;
+	float xNew = dir.x * cos(angle) - dir.y * sin(angle);
+	float yNew = dir.x * sin(angle) + dir.y * cos(angle);
+	dir.x = xNew;
+	dir.y = yNew;
 }
 
-Bullet::~Bullet() {
-	this->body_.~CircleShape();
-}
+Bullet::~Bullet() {}

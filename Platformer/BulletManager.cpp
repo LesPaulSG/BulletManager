@@ -1,4 +1,5 @@
 #include "BulletManager.h"
+
 #include <iostream>
 #include <cmath>
 #include <mutex>
@@ -6,103 +7,90 @@
 std::mutex mtx;
 
 BulletManager::BulletManager() {
-	this->bullets_.reserve(BULLETS_MAX_CAPACITY);
-	this->walls_.reserve(WALLS_MAX_CAPACITY);
+	bullets.reserve(BULLETS_MAX_CAPACITY);
+	walls.reserve(WALLS_MAX_CAPACITY);
 }
 
 std::vector<Bullet>* BulletManager::GetBullets() {
-	return &this->bullets_;
+	return &bullets;
 }
 
 std::vector<Wall>* BulletManager::GetWalls() {
-	return &this->walls_;
+	return &walls;
 }
 
 bool BulletManager::GetProcessed() {
-	return this->processed;
+	return processed;
 }
 
 bool BulletManager::GetUpdated() {
-	return this->updated;
+	return updated;
 }
 
 std::condition_variable* BulletManager::GetCv() {
-	return &this->cv;
+	return &cv;
 }
 
 void BulletManager::AddWall(Wall* wall) {
-	this->processed = false;
+	processed = false;
 
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [this] {return updated; });
 
-	if (this->walls_.size() < WALLS_MAX_CAPACITY) {
-		this->walls_.push_back(*wall);
+	if (walls.size() < WALLS_MAX_CAPACITY) {
+		walls.push_back(*wall);
 	}
 
-	this->processed = true;
-	this->cv.notify_one();
+	processed = true;
+	cv.notify_one();
 }
 
-void BulletManager::CreateWall(Vector2f start, Vector2f end, bool destructable) {
-	this->processed = false;
-
-	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this] {return updated; });
-
-	if (this->walls_.size() < WALLS_MAX_CAPACITY) {
-		if (LenghtOfLine(start, end) > 10) {	//check lengtn of wall for visible value
-			this->walls_.push_back(Wall(start, end, destructable));
-		}
+void BulletManager::CreateWall(sf::Vector2f start, sf::Vector2f end, bool destructable) {
+	if (LenghtOfLine(start, end) > 10) {	//check lengtn of wall for visible value
+		AddWall(&Wall(start, end, destructable));
 	}
-
-	this->processed = true;
-	this->cv.notify_one();
 }
 
 void BulletManager::Update(float time) {
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [this]{return processed; });
 
-	this->updated = false;
+	updated = false;
 
-	for (std::vector<Bullet>::iterator iter = this->bullets_.begin(); iter != this->bullets_.end(); ++iter) {
-		iter->Update(time, &this->walls_);
+	for (auto iter = bullets.begin(); iter != bullets.end(); ++iter) {
+		iter->Update(time, &walls);
 		if (!iter->GetAlive()) {
-			this->bullets_.erase(iter);
+			bullets.erase(iter);
 			break;
 		}
 	}
 
-	this->updated = true;
+	updated = true;
 	cv.notify_one();
 }
 
-void BulletManager::Fire(Vector2f pos, Vector2f dir, float speed, float lifeTime) {
-	this->processed = false;
+void BulletManager::Fire(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime) {
+	processed = false;
 
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [this] {return updated; });
 
-	if (this->bullets_.size() < BULLETS_MAX_CAPACITY) {
-		this->bullets_.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime));
+	if (bullets.size() < BULLETS_MAX_CAPACITY) {
+		bullets.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime));
 	}
 
-	this->processed = true;
-	this->cv.notify_one();
+	processed = true;
+	cv.notify_one();
 }
 
 void BulletManager::SetProcessed(bool nP) {
-	this->processed = nP;
+	processed = nP;
 }
 
 void BulletManager::WallTrancform() {
-	for (std::vector<Wall>::iterator iter = this->walls_.begin(); iter != this->walls_.end(); ++iter) {
+	for (auto iter = walls.begin(); iter != walls.end(); ++iter) {
 		iter->Transform();
 	}
 }
 
-BulletManager::~BulletManager() {
-	this->bullets_.~vector();
-	this->walls_.~vector();
-}
+BulletManager::~BulletManager() {}

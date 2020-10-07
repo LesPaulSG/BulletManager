@@ -1,60 +1,50 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
 #include "Wall.h"
 
-Wall::Wall(Vector2f A, Vector2f B) : pointA(A), pointB(B), destructable_(true) {
+Wall::Wall(sf::Vector2f A, sf::Vector2f B, bool destructable) 
+	: line(A, B), destructable(destructable) {
 	float lenght = LenghtOfLine(A, B);
-	CalculateVector();
+	vector = line.MidPoint();
 	CalculateRotation();
-	this->body_.setPosition(A);
-	this->body_.setSize(Vector2f(5, lenght));
-	this->body_.setFillColor(Color::Yellow);
-}
-
-Wall::Wall(Vector2f A, Vector2f B, bool destructable) : pointA(A), pointB(B), destructable_(destructable) {
-	float lenght = LenghtOfLine(A, B);
-	CalculateVector();
-	CalculateRotation();
-	this->body_.setPosition(A);
-	this->body_.setSize(Vector2f(5, lenght));
+	body.setPosition(A);
+	body.setSize(sf::Vector2f(5, lenght));
 	if (destructable) {
-		this->body_.setFillColor(Color::Yellow);
+		body.setFillColor(sf::Color::Yellow);
 	} else {
-		this->body_.setFillColor(Color::Green);
+		body.setFillColor(sf::Color::Green);
 	}
 }
 
 bool Wall::GetDestructable() {
-	return this->destructable_;
+	return destructable;
 }
 
-RectangleShape Wall::GetBody() {
-	return this->body_;
+sf::RectangleShape Wall::GetBody() {
+	return body;
 }
 
-void Wall::CalculateVector() {	//vector by coordinates of wall					
-	this->vector_.x = this->pointB.x - this->pointA.x;
-	this->vector_.y = this->pointB.y - this->pointA.y;
+Line* Wall::GetLine(){
+	return &line;
 }
 
 void Wall::CalculateRotation() {
-	double angle = acos(this->vector_.y / (sqrt(this->vector_.x * this->vector_.x + this->vector_.y * this->vector_.y)));
+	double angle = acos(vector.y / VectorsModule(vector));
 	angle *= -(180 / 3.14);
-	if (this->pointA.x > this->pointB.x) {
+	if (line.pointA.x > line.pointB.x) {
 		angle *= -1;
 	}
-	this->body_.setRotation(angle);
+	body.setRotation(angle);
 }
 
 void Wall::Transform() {
-	this->destructable_ = !this->destructable_;
-	if (this->destructable_) {
-		this->body_.setFillColor(Color::Yellow);
+	destructable = !destructable;
+	if (destructable) {
+		body.setFillColor(sf::Color::Yellow);
 	} else {
-		this->body_.setFillColor(Color::Green);
+		body.setFillColor(sf::Color::Green);
 	}
 }
 
-Wall::~Wall() {
-
-}
+Wall::~Wall() {}

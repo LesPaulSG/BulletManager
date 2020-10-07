@@ -1,32 +1,33 @@
 #pragma once
 #include <vector>
+#include <condition_variable>
+
 #include "Bullet.h"
 #include "Wall.h"
-#include "Definitions.h"
-#include <condition_variable>
+#include "Functions.h"
 
 class BulletManager {
 private:
-	std::vector<Bullet> bullets_;
-	std::vector<Wall> walls_;
+	std::vector<Bullet> bullets;
+	std::vector<Wall> walls;
 	std::condition_variable cv;
 	bool processed = true;
 	bool updated = true;
 
 public:
+	BulletManager();
+	~BulletManager();
+
 	std::vector<Bullet>* GetBullets();
 	std::vector<Wall>* GetWalls();
 	bool GetProcessed();
 	bool GetUpdated();
 	std::condition_variable* GetCv();
 
-	void AddWall(Wall*);
-	void CreateWall(Vector2f, Vector2f, bool);
-	void Update(float);
-	void Fire(Vector2f, Vector2f, float, float);
+	void AddWall(Wall* wall);
+	void CreateWall(sf::Vector2f start, sf::Vector2f end, bool destructable);
+	void Update(float time);
+	void Fire(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime);
 	void WallTrancform();
-	void SetProcessed(bool);
-
-	BulletManager();
-	~BulletManager();
+	void SetProcessed(bool nP);
 };

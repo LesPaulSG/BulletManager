@@ -1,7 +1,7 @@
 #pragma once
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 
-#include "Definitions.h"
+#include "Functions.h"
 #include "Wall.h"
 
 enum MoveDir{ FWD, BWD, RGH, LFT };
@@ -21,11 +21,6 @@ public:
 	Player(sf::Vector2f pos, float rotation);
 	~Player();
 
-	void Rotate(float angle);
-	void Rotate(sf::Vector2f mousePos);
-	void Move(MoveDir dir, float time, std::vector<Wall>* walls);
-	void CheckCollision(float time, std::vector<Wall>* walls, Vector2f oldPos);
-
 	sf::CircleShape GetBody();
 	sf::RectangleShape GetFwdVecBody();
 	sf::RectangleShape GetRghVecBody();
@@ -33,5 +28,10 @@ public:
 	sf::Vector2f GetForwardVector();
 
 	void SetRotation(float angle);
+
+	void Rotate(float angle);
+	void Rotate(sf::Vector2f mousePos);
+	void Move(MoveDir dir, float time, std::vector<Wall>* walls);
+	void CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f oldPos);
 };
 
