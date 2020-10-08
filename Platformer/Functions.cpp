@@ -1,6 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-
 #include "Functions.h"
 
 Line::Line(sf::Vector2f A, sf::Vector2f B) : pointA(A), pointB(B) {}
@@ -43,11 +40,11 @@ bool PointBelongsLine(sf::Vector2f point, Line A, Line B) {
 	return true;
 }
 
-sf::Vector2f Intersection(Line A, Line B) {
+bool Intersection(Line A, Line B, sf::Vector2f* iPoint) {
 	double kA = A.MidY() / A.MidX();
 	double kB = B.MidY() / B.MidX();
 	if (kA == kB) {
-		return sf::Vector2f(-9999, -9999);
+		return false;
 	}
 	double bA = A.pointA.y - kA * A.pointA.x;
 	double bB = B.pointA.y - kB * B.pointA.x;
@@ -60,10 +57,11 @@ sf::Vector2f Intersection(Line A, Line B) {
 	}
 	double yInter = kA * xInter + bA;
 	sf::Vector2f result(xInter, yInter);
-	if (PointBelongsLine(result, A, B)) {	
-		return result;						
+	if (PointBelongsLine(result, A, B)) {
+		*iPoint = result;
+		return true;						
 	}
-	return sf::Vector2f(-9999, -9999);
+	return false;
 }
 
 float AngleOfIntersec(Line A, Line B) {
@@ -86,4 +84,16 @@ bool isPointRight(Line line, sf::Vector2f point) {
 
 float VectorsModule(sf::Vector2f vec){
 	return std::sqrt(vec.x * vec.x + vec.y * vec.y);
+}
+
+void RotateVector(sf::Vector2f* vec, float angle){
+	float xNew = vec->x * cos(angle) - vec->y * sin(angle);
+	float yNew = vec->x * sin(angle) + vec->y * cos(angle);
+	vec->x = xNew;
+	vec->y = yNew;
+}
+
+void RotateUnitVector(sf::Vector2f* vec, float angle){
+	vec->x = sin(angle);
+	vec->y = -cos(angle);
 }

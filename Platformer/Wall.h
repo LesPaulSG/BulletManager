@@ -1,6 +1,4 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-
 #include "Functions.h"
 
 class Wall {
@@ -12,12 +10,13 @@ private:
 
 public:
 	Wall(sf::Vector2f, sf::Vector2f, bool);
-	~Wall();
+	~Wall() = default;
 
 	bool GetDestructable();
-	sf::RectangleShape GetBody();
+	sf::RectangleShape* GetBody();
 	Line* GetLine();
 
 	void CalculateRotation();
 	void Transform();
+	void UpdateColor();
 };

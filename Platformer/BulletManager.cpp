@@ -1,8 +1,7 @@
-#include "BulletManager.h"
-
-#include <iostream>
 #include <cmath>
 #include <mutex>
+
+#include "BulletManager.h"
 
 std::mutex mtx;
 
@@ -11,31 +10,21 @@ BulletManager::BulletManager() {
 	walls.reserve(WALLS_MAX_CAPACITY);
 }
 
-std::vector<Bullet>* BulletManager::GetBullets() {
-	return &bullets;
-}
+std::vector<Bullet>* BulletManager::GetBullets() {return &bullets;}
 
-std::vector<Wall>* BulletManager::GetWalls() {
-	return &walls;
-}
+std::vector<Wall>* BulletManager::GetWalls() {return &walls;}
 
-bool BulletManager::GetProcessed() {
-	return processed;
-}
+bool BulletManager::GetProcessed() {return processed;}
 
-bool BulletManager::GetUpdated() {
-	return updated;
-}
+bool BulletManager::GetUpdated() {return updated;}
 
-std::condition_variable* BulletManager::GetCv() {
-	return &cv;
-}
+std::condition_variable* BulletManager::GetCv() {return &cv;}
 
 void BulletManager::AddWall(Wall* wall) {
-	processed = false;
-
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [this] {return updated; });
+
+	processed = false;
 
 	if (walls.size() < WALLS_MAX_CAPACITY) {
 		walls.push_back(*wall);
@@ -70,10 +59,10 @@ void BulletManager::Update(float time) {
 }
 
 void BulletManager::Fire(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime) {
-	processed = false;
-
 	std::unique_lock<std::mutex> lock(mtx);
 	cv.wait(lock, [this] {return updated; });
+
+	processed = false;
 
 	if (bullets.size() < BULLETS_MAX_CAPACITY) {
 		bullets.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime));
@@ -83,14 +72,10 @@ void BulletManager::Fire(sf::Vector2f pos, sf::Vector2f dir, float speed, float 
 	cv.notify_one();
 }
 
-void BulletManager::SetProcessed(bool nP) {
-	processed = nP;
-}
+void BulletManager::SetProcessed(bool nP) {processed = nP;}
 
 void BulletManager::WallTrancform() {
-	for (auto iter = walls.begin(); iter != walls.end(); ++iter) {
-		iter->Transform();
+	for (auto& iter : walls) {
+		iter.Transform();
 	}
 }
-
-BulletManager::~BulletManager() {}

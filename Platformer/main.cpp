@@ -1,9 +1,5 @@
-#include <iostream>
 #include <fstream>
-#include <thread>
-#include <SFML/Graphics.hpp>
 
-#include "BulletManager.h"
 #include "IO_Thread.h"
 
 int main(){
@@ -21,25 +17,22 @@ int main(){
 	for (int i = 0; i < quantity; ++i) {
 		int A, B, C, D;
 		fin >> A >> B >> C >> D;
-		bulletManager.CreateWall(sf::Vector2f(A, B), sf::Vector2f(C, D), false);
+		bulletManager.CreateWall(sf::Vector2f(A, B), sf::Vector2f(C, D), true);
 	}
 	fin.close();
 
 	std::chrono::duration<float> time;
-	auto start = std::chrono::high_resolution_clock::now();
-	auto end = start;
+	auto clock = std::chrono::high_resolution_clock::now();
 	bool gameOver = false;
 
 	std::thread IOThread(input, &bulletManager, &time, &gameOver);		//input output thread
 	IOThread.detach();
 
 	while (!gameOver){
-		start = std::chrono::high_resolution_clock::now();
-
 		bulletManager.Update(time.count());
 
-		end = std::chrono::high_resolution_clock::now();
-		time = end - start;
+		time = std::chrono::high_resolution_clock::now() - clock;
+		clock = std::chrono::high_resolution_clock::now();
 	}
 
 	return 0;

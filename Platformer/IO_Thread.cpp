@@ -1,34 +1,30 @@
-#include "IO_Thread.h"
-#include <iostream>
 #include <mutex>
 
+#include "IO_Thread.h"
 #include "Player.h"
 
 std::mutex mtxIO;
 
-sf::Vector2i LmbStartPos, RmbStartPos;			//mouse positions for firing
-sf::Vector2i LmbReleasedPos, RmbReleasedPos;	//and creating walls
+sf::Vector2i LmbStartPos, RmbStartPos;				//mouse positions for firing
+sf::Vector2i LmbReleasedPos, RmbReleasedPos;		//and creating walls
 sf::Vector2i lookAt(0,0);
 
 void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 	sf::Font font;									//text obj for UI
-	font.loadFromFile("OpenSans-Bold.ttf");		//
+	font.loadFromFile("OpenSans-Bold.ttf");			//
 	sf::Text ui("",font,16);						//
-	ui.setPosition(5, 5);						//
+	ui.setPosition(5, 5);							//
 	ui.setFillColor(sf::Color::Red);				//
 
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "BulletManager", sf::Style::Fullscreen);
-	window.setVerticalSyncEnabled(true);
+	//window.setVerticalSyncEnabled(true);
 
 	std::chrono::duration<float> time;
-	auto start = std::chrono::high_resolution_clock::now();
-	auto end = start;
+	auto clock = std::chrono::high_resolution_clock::now();
 
 	Player player(sf::Vector2f(960, 540), 0);
 
 	while (true) {
-		start = std::chrono::high_resolution_clock::now();
-
 		if (lookAt != sf::Mouse::getPosition()) {
 			lookAt = sf::Mouse::getPosition();
 			player.Rotate(sf::Vector2f(lookAt));
@@ -62,11 +58,8 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 			} else if (event.type == sf::Event::MouseButtonReleased) {
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					LmbReleasedPos = sf::Mouse::getPosition();
-					float x = LmbReleasedPos.x - player.GetPosition().x;
-					float y = LmbReleasedPos.y - player.GetPosition().y;
-					sf::Vector2f direction(x, y);
-					float speed = 10;
-					bm->Fire(player.GetPosition(), direction, speed, 30);//firing when LMB released
+					sf::Vector2f direction = (sf::Vector2f)LmbReleasedPos - player.GetPosition();
+					bm->Fire(player.GetPosition(), direction, 10, 30);	//firing when LMB released
 				} else if (event.mouseButton.button == sf::Mouse::Right) {
 					RmbReleasedPos = sf::Mouse::getPosition();
 					bm->CreateWall(sf::Vector2f(RmbStartPos), sf::Vector2f(RmbReleasedPos), true);//build a wall when RMB released
@@ -78,16 +71,14 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 
 		bm->SetProcessed(false);
 
-		for (auto iter = bm->GetWalls()->begin(); iter != bm->GetWalls()->end(); ++iter) {
-			window.draw(iter->GetBody());
+		for (auto& iter : *bm->GetWalls()) {
+			window.draw(*iter.GetBody());
 		}
-		for (auto iter = bm->GetBullets()->begin(); iter != bm->GetBullets()->end(); ++iter) {
-			window.draw(iter->GetBody());
+		for (auto& iter : *bm->GetBullets()) {
+			window.draw(*iter.GetBody());
 		}
 
 		window.draw(player.GetBody());
-		window.draw(player.GetFwdVecBody());
-		window.draw(player.GetRghVecBody());
 
 		ui.setString("bullest:  " + std::to_string(bm->GetBullets()->size())	//bullets quantity
 					+ "\nwalls:     " + std::to_string(bm->GetWalls()->size())	//walls quantity
@@ -104,7 +95,8 @@ void input(BulletManager* bm, std::chrono::duration<float>* t, bool* gameOver) {
 			*gameOver = true;
 		}
 
-		end = std::chrono::high_resolution_clock::now();
-		time = end - start;
+		//end = std::chrono::high_resolution_clock::now();
+		time = std::chrono::high_resolution_clock::now() - clock;
+		clock = std::chrono::high_resolution_clock::now();
 	}
 }

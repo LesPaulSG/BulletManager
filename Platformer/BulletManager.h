@@ -3,8 +3,6 @@
 #include <condition_variable>
 
 #include "Bullet.h"
-#include "Wall.h"
-#include "Functions.h"
 
 class BulletManager {
 private:
@@ -16,7 +14,7 @@ private:
 
 public:
 	BulletManager();
-	~BulletManager();
+	~BulletManager() = default;
 
 	std::vector<Bullet>* GetBullets();
 	std::vector<Wall>* GetWalls();
