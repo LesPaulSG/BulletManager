@@ -15,7 +15,7 @@ bool Bullet::GetAlive() {return alive;}
 void Bullet::CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f oldPos) {
 	sf::Vector2f iPoint(0, 0);
 	for (auto iter = walls->begin(); iter != walls->end(); ++iter) {
-		if (Intersection(Line(oldPos, pos), Line(*iter->GetLine()), &iPoint)) {
+		if (Line(oldPos, pos).Intersection(Line(*iter->GetLine()), &iPoint)) {
 			Collision(iPoint, oldPos, *iter->GetLine());
 			if (iter->GetDestructable()) {
 				walls->erase(iter);
@@ -40,8 +40,8 @@ void Bullet::Update(float t, std::vector<Wall> * walls) {
 }
 
 void Bullet::Collision(sf::Vector2f iPoint, sf::Vector2f oldPos, Line wall) {
-	float angle = AngleOfIntersec(Line(oldPos, pos), wall);
-	ChangeDirection(angle, isPointRight(wall, oldPos));
+	float angle = wall.AngleOfIntersec(Line(oldPos, pos));
+	ChangeDirection(angle, wall.isPointRight(oldPos));
 	pos = iPoint + dir * 0.00001f;				//update positon to intersection point + small distance
 	body.setPosition(pos);
 	speed *= 0.95;

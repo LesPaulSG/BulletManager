@@ -28,7 +28,7 @@ void Player::Rotate(float angle){
 }
 
 void Player::Rotate(sf::Vector2f mousePos){
-	float angle = AngleOfIntersec(Line(sf::Vector2f(0, 0), sf::Vector2f(1920, 0)), Line(pos, mousePos));
+	float angle = Line(sf::Vector2f(0, 0), (sf::Vector2f(1920, 0))).AngleOfIntersec(Line(pos, mousePos));
 	angle += 3.14159;
 	if (mousePos.y < pos.y) {
 		angle *= -1.0;

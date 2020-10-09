@@ -19,19 +19,16 @@ public:
 	sf::Vector2f MidPoint();
 	float MidX();
 	float MidY();
+	float Lenght();
+	bool isPointRight(sf::Vector2f point);
+	bool Intersection(Line B, sf::Vector2f* iPoint);
+	float AngleOfIntersec(Line B);
+	bool HasPoint(sf::Vector2f point);
 };
 
-float LenghtOfLine(sf::Vector2f A, sf::Vector2f B);
-
-bool isPointBeetwenPoints(float x, float a, float b);
+bool isPointInRange(float x, float a, float b);
 
 bool PointBelongsLine(sf::Vector2f point, Line A, Line B);
-
-bool Intersection(Line A, Line B, sf::Vector2f* iPoint);
-
-float AngleOfIntersec(Line A, Line B);
-
-bool isPointRight(Line line, sf::Vector2f point);
 
 float VectorsModule(sf::Vector2f vec);
 

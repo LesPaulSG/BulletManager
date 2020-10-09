@@ -5,7 +5,7 @@ Wall::Wall(sf::Vector2f A, sf::Vector2f B, bool destructable)
 	vector = line.MidPoint();
 	CalculateRotation();
 	body.setPosition(A);
-	body.setSize(sf::Vector2f(5, LenghtOfLine(A, B)));
+	body.setSize(sf::Vector2f(5, Line(A, B).Lenght()));
 	UpdateColor();
 }
 
