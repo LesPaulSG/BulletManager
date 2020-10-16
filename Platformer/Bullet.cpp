@@ -27,13 +27,13 @@ void Bullet::CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f o
 }
 
 void Bullet::Update(float t, std::vector<Wall> * walls) {
-	sf::Vector2f oldPos = pos;							//position before update
-	pos += dir * speed * t;								//new position
+	sf::Vector2f oldPos = pos;			//position before update
+	pos += dir * speed * t;				//new position
 	body.setPosition(pos);
 
 	CheckCollision(t, walls, oldPos);
 
-	speed -= t/30;										//braking over time
+	speed -= t/30;						//braking over time
 	time += t;
 	
 	LifeCheck();
@@ -42,7 +42,7 @@ void Bullet::Update(float t, std::vector<Wall> * walls) {
 void Bullet::Collision(sf::Vector2f iPoint, sf::Vector2f oldPos, Line wall) {
 	float angle = wall.AngleOfIntersec(Line(oldPos, pos));
 	ChangeDirection(angle, wall.isPointRight(oldPos));
-	pos = iPoint + dir * 0.00001f;				//update positon to intersection point + small distance
+	pos = iPoint + dir * 0.00001f;		//update positon to intersection point + small distance
 	body.setPosition(pos);
 	speed *= 0.95;
 }

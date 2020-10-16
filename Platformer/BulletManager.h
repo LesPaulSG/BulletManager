@@ -3,6 +3,7 @@
 #include <condition_variable>
 
 #include "Bullet.h"
+#include "Player.h"
 
 class BulletManager {
 private:
@@ -11,6 +12,7 @@ private:
 	std::condition_variable cv;
 	bool processed = true;
 	bool updated = true;
+	Player player;
 
 public:
 	BulletManager();
@@ -21,6 +23,7 @@ public:
 	bool GetProcessed();
 	bool GetUpdated();
 	std::condition_variable* GetCv();
+	Player* GetPlayer();
 
 	void AddWall(Wall* wall);
 	void CreateWall(sf::Vector2f start, sf::Vector2f end, bool destructable);

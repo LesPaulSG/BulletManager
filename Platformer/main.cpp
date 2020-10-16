@@ -25,7 +25,10 @@ int main(){
 	auto clock = std::chrono::high_resolution_clock::now();
 	bool gameOver = false;
 
+	//VisualThread vt(&bulletManager, &time, &gameOver);
+
 	std::thread IOThread(input, &bulletManager, &time, &gameOver);		//input output thread
+	//std::thread IOThread(&VisualThread::Update, &vt);
 	IOThread.detach();
 
 	while (!gameOver){

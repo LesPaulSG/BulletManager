@@ -5,7 +5,7 @@
 
 std::mutex mtx;
 
-BulletManager::BulletManager() {
+BulletManager::BulletManager() : player(sf::Vector2f(960, 540), 0) {
 	bullets.reserve(BULLETS_MAX_CAPACITY);
 	walls.reserve(WALLS_MAX_CAPACITY);
 }
@@ -19,6 +19,8 @@ bool BulletManager::GetProcessed() {return processed;}
 bool BulletManager::GetUpdated() {return updated;}
 
 std::condition_variable* BulletManager::GetCv() {return &cv;}
+
+Player* BulletManager::GetPlayer(){return &player;}
 
 void BulletManager::AddWall(Wall* wall) {
 	processed = false;
@@ -41,8 +43,10 @@ void BulletManager::CreateWall(sf::Vector2f start, sf::Vector2f end, bool destru
 }
 
 void BulletManager::Update(float time) {
+	player.Move(time);
+
 	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this]{return processed; });
+	cv.wait(lock, [this] {return processed; });
 
 	updated = false;
 

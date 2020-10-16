@@ -136,6 +136,7 @@
     <ClCompile Include="BulletManager.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="IO_Thread.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Wall.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="BulletManager.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="IO_Thread.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>

@@ -36,20 +36,22 @@ void Player::Rotate(sf::Vector2f mousePos){
 	Rotate(angle);
 }
 
-void Player::Move(MoveDir dir, float time, std::vector<Wall>* walls){
+void Player::Move(float time){
 	sf::Vector2f oldPos = pos;
 	switch (dir){
+	case STP:
+		return;
 	case FWD:
-		pos += forwardVector;
+		pos += forwardVector * time * 50.f;
 		break;
 	case BWD:
-		pos -= forwardVector;
+		pos -= forwardVector * time * 50.f;
 		break;
 	case RGH:
-		pos += rightVector;
+		pos += rightVector * time * 50.f;
 		break;
 	case LFT:
-		pos -= rightVector;
+		pos -= rightVector * time * 50.f;
 		break;
 	default:
 		break;
@@ -62,3 +64,7 @@ sf::CircleShape Player::GetBody(){return body;}
 sf::Vector2f Player::GetPosition() {return pos;}
 
 sf::Vector2f Player::GetForwardVector(){return forwardVector;}
+
+void Player::SetDir(MoveDir nDir){
+	dir = nDir;
+}
