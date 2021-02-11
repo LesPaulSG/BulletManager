@@ -1,7 +1,7 @@
 #pragma once
 #include "Wall.h"
 
-enum MoveDir{ FWD, BWD, RGH, LFT };
+enum MoveDir{ STP, FWD, BWD, RGH, LFT };
 
 class Player{
 private:
@@ -9,6 +9,7 @@ private:
 	sf::Vector2f forwardVector;
 	sf::Vector2f rightVector;
 	float rotation;
+	MoveDir dir;
 
 	sf::CircleShape body;
 
@@ -16,12 +17,14 @@ public:
 	Player(sf::Vector2f pos, float rotation);
 	~Player() = default;
 
-	sf::CircleShape GetBody();
-	sf::Vector2f GetPosition();
-	sf::Vector2f GetForwardVector();
+	const sf::CircleShape& GetBody() const;
+	const sf::Vector2f& GetPosition() const;
+	const sf::Vector2f& GetForwardVector() const;
+
+	void SetDir(MoveDir nDir);
 
 	void Rotate(float angle);
-	void Rotate(sf::Vector2f mousePos);
-	void Move(MoveDir dir, float time, std::vector<Wall>* walls);	
+	void Rotate(const sf::Vector2f& mousePos);
+	void Move(float time);	
 };
 

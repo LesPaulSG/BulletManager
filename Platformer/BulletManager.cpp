@@ -1,78 +1,91 @@
 #include <cmath>
-#include <mutex>
+#include <iostream>
 
 #include "BulletManager.h"
 
-std::mutex mtx;
-
-BulletManager::BulletManager() {
+BulletManager::BulletManager() : player(sf::Vector2f(960, 540), 0) {
 	bullets.reserve(BULLETS_MAX_CAPACITY);
 	walls.reserve(WALLS_MAX_CAPACITY);
 }
 
-std::vector<Bullet>* BulletManager::GetBullets() {return &bullets;}
+const std::vector<Bullet>& BulletManager::GetBullets() const {return bullets;}
 
-std::vector<Wall>* BulletManager::GetWalls() {return &walls;}
+const std::vector<Wall>& BulletManager::GetWalls() const {return walls;}
 
-bool BulletManager::GetProcessed() {return processed;}
+std::mutex& BulletManager::GetBmMutex() {return bmMutex;}
 
-bool BulletManager::GetUpdated() {return updated;}
+const Player& BulletManager::GetPlayer() const {return player;}
 
-std::condition_variable* BulletManager::GetCv() {return &cv;}
-
-void BulletManager::AddWall(Wall* wall) {
-	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this] {return updated; });
-
-	processed = false;
-
-	if (walls.size() < WALLS_MAX_CAPACITY) {
-		walls.push_back(*wall);
-	}
-
-	processed = true;
-	cv.notify_one();
+void BulletManager::AddTask(Task& pt) {
+	std::lock_guard guard(bmMutex);
+	tasks.push(pt);
 }
 
-void BulletManager::CreateWall(sf::Vector2f start, sf::Vector2f end, bool destructable) {
-	if (LenghtOfLine(start, end) > 10) {	//check lengtn of wall for visible value
-		AddWall(&Wall(start, end, destructable));
+void BulletManager::AddWall(Wall&& wall) {
+	if (walls.size() < WALLS_MAX_CAPACITY) {
+		walls.push_back(wall);
+	}
+}
+
+void BulletManager::CreateWall(const sf::Vector2f& start, const sf::Vector2f& end, bool destructable) {
+	if (Line(start, end).lenght > 10) {														//check lengtn of wall for visible value	TODO add static method for lenght
+		AddWall(Wall(start, end, destructable));
 	}
 }
 
 void BulletManager::Update(float time) {
-	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this]{return processed; });
+	player.Move(time);
 
-	updated = false;
-
-	for (auto iter = bullets.begin(); iter != bullets.end(); ++iter) {
-		iter->Update(time, &walls);
-		if (!iter->GetAlive()) {
-			bullets.erase(iter);
-			break;
+	if (!tasks.empty()) {
+		std::lock_guard lg(bmMutex);
+		while (!tasks.empty()) {
+			auto current_task = tasks.front();
+			tasks.pop();
+			switch (current_task.type)
+			{
+			case TaskType::ADD_BULLET:
+				Fire(std::move(current_task.pt.ab.pos), std::move(current_task.pt.ab.dir), current_task.pt.ab.speed, current_task.pt.ab.lifeTime);
+				break;
+			case TaskType::ADD_WALL:
+				CreateWall(std::move(current_task.pt.aw.pos), std::move(current_task.pt.aw.dir), current_task.pt.aw.destructable);
+				break;
+			default:
+				break;
+			}
 		}
 	}
-
-	updated = true;
-	cv.notify_one();
-}
-
-void BulletManager::Fire(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime) {
-	std::unique_lock<std::mutex> lock(mtx);
-	cv.wait(lock, [this] {return updated; });
-
-	processed = false;
-
-	if (bullets.size() < BULLETS_MAX_CAPACITY) {
-		bullets.push_back(Bullet(pos, dir, std::min(speed, 30.f), lifeTime));
+	{
+		std::lock_guard lg(bmMutex);
+		for (auto iter = bullets.begin(); iter != bullets.end(); ++iter) {
+			if (!iter->GetAlive()) {
+				bullets.erase(iter);
+				break;
+			}
+		}
+		for (auto iter = walls.begin(); iter != walls.end(); ++iter) {
+			if (!iter->GetAlive()) {
+				walls.erase(iter);
+				break;
+			}
+		}
+		//bulletsToDelete.clear();
+		//wallsToDelete.clear();
 	}
 
-	processed = true;
-	cv.notify_one();
+	for (auto iter = bullets.begin(); iter != bullets.end(); ++iter) {
+		iter->Update(time, walls);
+		if (!iter->GetAlive()) {
+			bulletsToDelete.push_back(iter);
+			//break;
+		}
+	}
 }
 
-void BulletManager::SetProcessed(bool nP) {processed = nP;}
+void BulletManager::Fire(const sf::Vector2f& pos, const sf::Vector2f& dir, float speed, float lifeTime) {
+	if (bullets.size() < BULLETS_MAX_CAPACITY) {
+		bullets.push_back(Bullet(pos, dir, std::min(speed, 10.f), lifeTime));
+	}
+}
 
 void BulletManager::WallTrancform() {
 	for (auto& iter : walls) {

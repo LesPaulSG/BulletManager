@@ -1,21 +1,24 @@
 #pragma once
-#include "Functions.h"
+#include "Line.h"
 
 class Wall {
 private:
 	bool destructable;
-	sf::RectangleShape body;
+	bool alive;
 	sf::Vector2f vector;
+	sf::RectangleShape body;
 	Line line;
 
 public:
-	Wall(sf::Vector2f, sf::Vector2f, bool);
+	Wall(sf::Vector2f A, sf::Vector2f B, bool);
 	~Wall() = default;
 
-	bool GetDestructable();
-	sf::RectangleShape* GetBody();
-	Line* GetLine();
+	bool GetDestructable() const;
+	bool GetAlive() const;
+	const sf::RectangleShape& GetBody() const;
+	const Line& GetLine() const;
 
+	void Destroy();
 	void CalculateRotation();
 	void Transform();
 	void UpdateColor();

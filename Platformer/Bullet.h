@@ -3,24 +3,24 @@
 
 class Bullet {
 private:
-	sf::CircleShape body;
+	sf::Vector2f pos;
+	sf::Vector2f dir;
 	float speed;
 	float time;
 	float lifeTime;
-	sf::Vector2f pos;
-	sf::Vector2f dir;
 	bool alive;
+	sf::CircleShape body;
 
 public:
-	sf::CircleShape* GetBody();
-	bool GetAlive();
+	const sf::CircleShape& GetBody() const;
+	bool GetAlive() const;
 
 	Bullet(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime);
 	~Bullet() = default;
 
-	void CheckCollision(float time, std::vector<Wall>* walls, sf::Vector2f oldPos);
-	void Update(float t, std::vector<Wall>* walls);
-	void Collision(sf::Vector2f iPoint, sf::Vector2f oldPos, Line wall);
+	void CheckCollision(float time, std::vector<Wall>& walls, const sf::Vector2f& oldPos);
+	void Update(float t, std::vector<Wall>& walls);
+	void Collision(const sf::Vector2f& iPoint, const sf::Vector2f& oldPos, const Line& wall);
 	void ChangeDirection(float beta, bool right);
 	void LifeCheck();
 };

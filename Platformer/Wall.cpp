@@ -1,25 +1,31 @@
 #include "Wall.h"
 
 Wall::Wall(sf::Vector2f A, sf::Vector2f B, bool destructable) 
-	: line(A, B), destructable(destructable) {
-	vector = line.MidPoint();
+	:	destructable(destructable),
+		alive(true),
+		line(A, B) {
+	vector = line.midPoint;
 	CalculateRotation();
 	body.setPosition(A);
-	body.setSize(sf::Vector2f(5, LenghtOfLine(A, B)));
+	body.setSize(sf::Vector2f(5, line.lenght));
 	UpdateColor();
 }
 
-bool Wall::GetDestructable() {return destructable;}
+bool Wall::GetDestructable() const {return destructable;}
 
-sf::RectangleShape* Wall::GetBody() {return &body;}
+bool Wall::GetAlive() const {return alive;}
 
-Line* Wall::GetLine(){return &line;}
+const sf::RectangleShape& Wall::GetBody() const {return body;}
+
+const Line& Wall::GetLine() const {return line;}
+
+void Wall::Destroy() { alive = false; }
 
 void Wall::CalculateRotation() {
 	double angle = acos(vector.y / VectorsModule(vector));
-	angle *= -(180 / 3.14);
+	angle *= -(180.0 / 3.14);
 	if (line.pointA.x > line.pointB.x) {
-		angle *= -1;
+		angle *= -1.0;
 	}
 	body.setRotation(angle);
 }
