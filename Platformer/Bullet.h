@@ -18,7 +18,7 @@ public:
 	Bullet(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime);
 	~Bullet() = default;
 
-	void CheckCollision(float time, std::vector<Wall>& walls, const sf::Vector2f& oldPos);
+	void CheckCollision(std::vector<Wall>& walls, const sf::Vector2f& oldPos);
 	void Update(float t, std::vector<Wall>& walls);
 	void Collision(const sf::Vector2f& iPoint, const sf::Vector2f& oldPos, const Line& wall);
 	void ChangeDirection(float beta, bool right);

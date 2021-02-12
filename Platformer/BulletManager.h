@@ -70,7 +70,7 @@ public:
 	//bool GetUpdated();
 	std::mutex& GetBmMutex();
 	//std::condition_variable* GetCv();
-	const Player& GetPlayer() const;
+	Player& GetPlayer();
 
 	void AddTask(Task& pt);
 	void AddWall(Wall&& wall);

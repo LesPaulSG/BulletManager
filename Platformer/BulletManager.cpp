@@ -14,7 +14,7 @@ const std::vector<Wall>& BulletManager::GetWalls() const {return walls;}
 
 std::mutex& BulletManager::GetBmMutex() {return bmMutex;}
 
-const Player& BulletManager::GetPlayer() const {return player;}
+Player& BulletManager::GetPlayer() {return player;}
 
 void BulletManager::AddTask(Task& pt) {
 	std::lock_guard guard(bmMutex);
@@ -34,8 +34,8 @@ void BulletManager::CreateWall(const sf::Vector2f& start, const sf::Vector2f& en
 }
 
 void BulletManager::Update(float time) {
-	player.Move(time);
-
+	player.Update(time, walls);
+	
 	if (!tasks.empty()) {
 		std::lock_guard lg(bmMutex);
 		while (!tasks.empty()) {
@@ -74,16 +74,16 @@ void BulletManager::Update(float time) {
 
 	for (auto iter = bullets.begin(); iter != bullets.end(); ++iter) {
 		iter->Update(time, walls);
-		if (!iter->GetAlive()) {
-			bulletsToDelete.push_back(iter);
+		//if (!iter->GetAlive()) {
+		//	bulletsToDelete.push_back(iter);
 			//break;
-		}
+		//}
 	}
 }
 
 void BulletManager::Fire(const sf::Vector2f& pos, const sf::Vector2f& dir, float speed, float lifeTime) {
 	if (bullets.size() < BULLETS_MAX_CAPACITY) {
-		bullets.push_back(Bullet(pos, dir, std::min(speed, 10.f), lifeTime));
+		bullets.push_back(Bullet(pos, dir, /*std::min(speed, 10.f)*/0.5f, lifeTime));
 	}
 }
 

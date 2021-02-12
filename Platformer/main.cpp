@@ -11,7 +11,7 @@ int main(){
 	bulletManager.CreateWall(sf::Vector2f(0, HEIGHT), sf::Vector2f(WIDTH, HEIGHT), false);				//
 
 	for (int i = 0; i <= 50; ++i) {
-		bulletManager.Fire(sf::Vector2f(10+i + i, 10 + i + i), sf::Vector2f(110 + i + i, 110 + i + i), 10, 10);
+		//bulletManager.Fire(sf::Vector2f(10+i + i, 10 + i + i), sf::Vector2f(110 + i + i, 110 + i + i), 10, 100);
 	}
 
 	std::ifstream fin;
@@ -26,7 +26,6 @@ int main(){
 	fin.close();
 	
 	std::chrono::duration<float> time{ 0 };
-	auto clock = std::chrono::high_resolution_clock::now();
 	bool gameOver = false;
 
 	//VisualThread vt(&bulletManager, &time, &gameOver);
@@ -35,7 +34,8 @@ int main(){
 	//std::thread IOThread(&VisualThread::Update, &vt);
 	IOThread.detach();
 
-	std::this_thread::sleep_for(std::chrono::nanoseconds(3000000000));
+	//std::this_thread::sleep_for(std::chrono::nanoseconds(3000000000));
+	auto clock = std::chrono::high_resolution_clock::now();//upper
 
 	while (!gameOver){
 		//bulletManager.Fire(sf::Vector2f(10, 10), sf::Vector2f(110, 110), 10, 10);

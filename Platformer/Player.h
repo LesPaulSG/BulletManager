@@ -9,6 +9,8 @@ private:
 	sf::Vector2f forwardVector;
 	sf::Vector2f rightVector;
 	float rotation;
+	float speed;
+	float radius;
 	MoveDir dir;
 
 	sf::CircleShape body;
@@ -23,8 +25,11 @@ public:
 
 	void SetDir(MoveDir nDir);
 
+	void CheckCollision(float time, const sf::Vector2f& oldPos, std::vector<Wall>& walls);
+	void Collision(float time, const sf::Vector2f& iPoint, const sf::Vector2f& oldPos, const Wall& wall);
+	void Update(float time, std::vector<Wall>& walls);
 	void Rotate(float angle);
 	void Rotate(const sf::Vector2f& mousePos);
-	void Move(float time);	
+	bool Move(float time);	
 };
 

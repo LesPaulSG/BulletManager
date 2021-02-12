@@ -29,8 +29,8 @@ public:
 
 void input(BulletManager& bm, std::chrono::duration<float>& t, bool& gameOver);
 
-void CheckEvent(sf::Event* event, BulletManager* bm, float t);
+void CheckEvent(sf::Event& event, BulletManager& bm, float t);
 
 void MouseCheck();
 
-void KeyboardCheck(sf::Event* event, BulletManager* bm, float t);
+void KeyboardCheck(sf::Event& event, BulletManager& bm, float t);

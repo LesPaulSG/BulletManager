@@ -1,6 +1,6 @@
 #include "IO_Thread.h"
 
-sf::Vector2i LmbStartPos, RmbStartPos;				//mouse positions for firing
+sf::Vector2i LmbStartPos,    RmbStartPos;			//mouse positions for firing
 sf::Vector2i LmbReleasedPos, RmbReleasedPos;		//and creating walls
 
 void input(BulletManager& bm, std::chrono::duration<float>& t, bool& gameOver) {
@@ -21,7 +21,7 @@ void input(BulletManager& bm, std::chrono::duration<float>& t, bool& gameOver) {
 
 	while (true) {
 		while (window.pollEvent(evt)) {
-			//CheckEvent(&evt, bm, time.count());
+			CheckEvent(evt, bm, time.count());
 			if (evt.type == sf::Event::Closed) {
 				gameOver = true;
 				window.close();
@@ -38,7 +38,7 @@ void input(BulletManager& bm, std::chrono::duration<float>& t, bool& gameOver) {
 					//bm->Fire(bm->GetPlayer()->GetPosition(), direction, 10, 10);								//firing when LMB released
 				} else if (evt.mouseButton.button == sf::Mouse::Right) {
 					RmbReleasedPos = sf::Mouse::getPosition();
-					Task task{ TaskType::ADD_WALL, PackagedTask{sf::Vector2f(RmbStartPos), sf::Vector2f(RmbReleasedPos), false} };
+					Task task{ TaskType::ADD_WALL, PackagedTask{sf::Vector2f(RmbStartPos), sf::Vector2f(RmbReleasedPos), true} };
 					bm.AddTask(task);
 					//bm->CreateWall(sf::Vector2f(RmbStartPos), sf::Vector2f(RmbReleasedPos), false);	//build a wall when RMB released
 				}
@@ -49,10 +49,10 @@ void input(BulletManager& bm, std::chrono::duration<float>& t, bool& gameOver) {
 
 		{
 			std::lock_guard guard(bm.GetBmMutex());
-			for (auto iter : bm.GetWalls()){//->begin(); iter != bm->GetWalls()->end(); ++iter) {
+			for (auto& iter : bm.GetWalls()){//->begin(); iter != bm->GetWalls()->end(); ++iter) {
 				window.draw(iter.GetBody());
 			}
-			for (auto iter : bm.GetBullets()){//->begin(); iter != bm->GetBullets()->end(); ++iter) {
+			for (auto& iter : bm.GetBullets()){//->begin(); iter != bm->GetBullets()->end(); ++iter) {
 				window.draw(iter.GetBody());
 			}
 		}
@@ -68,29 +68,30 @@ void input(BulletManager& bm, std::chrono::duration<float>& t, bool& gameOver) {
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 			gameOver = true;
+			break;
 		}
 
-		time = std::chrono::high_resolution_clock::now() - clock;
+		time  = std::chrono::high_resolution_clock::now() - clock;
 		clock = std::chrono::high_resolution_clock::now();
 	}
 }
 
-/*void CheckEvent(sf::Event* event, BulletManager* bm, float t){
-	switch (event->type){
+void CheckEvent(sf::Event& event, BulletManager& bm, float t){
+	switch (event.type){
 	case sf::Event::Closed:
 		break;
 	case sf::Event::KeyPressed:
 		KeyboardCheck(event, bm, t);
 		break;
 	case sf::Event::KeyReleased:
-		bm->GetPlayer()->SetDir(STP);
+		bm.GetPlayer().SetDir(STP);
 		break;
 	case sf::Event::MouseButtonPressed:
 		break;
 	case sf::Event::MouseButtonReleased:
 		break;
 	case sf::Event::MouseMoved:
-		bm->GetPlayer()->Rotate(sf::Vector2f(sf::Mouse::getPosition()));
+		bm.GetPlayer().Rotate(std::move(sf::Vector2f(sf::Mouse::getPosition())));
 		break;
 	default:
 		break;
@@ -101,19 +102,19 @@ void MouseCheck(){
 
 }
 
-void KeyboardCheck(sf::Event* event, BulletManager* bm, float t){
-	switch (event->key.code) {
+void KeyboardCheck(sf::Event& event, BulletManager& bm, float t){
+	switch (event.key.code) {
 	case sf::Keyboard::W:
-		bm->GetPlayer()->SetDir(FWD);
+		bm.GetPlayer().SetDir(FWD);
 		break;
 	case sf::Keyboard::S:
-		bm->GetPlayer()->SetDir(BWD);
+		bm.GetPlayer().SetDir(BWD);
 		break;
 	case sf::Keyboard::D:
-		bm->GetPlayer()->SetDir(RGH);
+		bm.GetPlayer().SetDir(RGH);
 		break;
 	case sf::Keyboard::A:
-		bm->GetPlayer()->SetDir(LFT);
+		bm.GetPlayer().SetDir(LFT);
 		break;
 	}
 }/*

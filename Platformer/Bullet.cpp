@@ -10,8 +10,8 @@ Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime)
 		lifeTime(lifeTime),
 		alive(true) {
 	body.setPosition(pos);
-	body.setOrigin(sf::Vector2f(body.getOrigin().x + 5.f, body.getOrigin().y + 5.f));
-	body.setRadius(10);
+	body.setOrigin(sf::Vector2f(body.getOrigin().x + 10.f, body.getOrigin().y + 10.f));
+	body.setRadius(10.f);
 	body.setFillColor(sf::Color::Red);
 }
 
@@ -19,18 +19,23 @@ const sf::CircleShape& Bullet::GetBody() const {return body;}
 
 bool Bullet::GetAlive() const {return alive;}
 
-void Bullet::CheckCollision(float time, std::vector<Wall>& walls, const sf::Vector2f& oldPos) {
+void Bullet::CheckCollision(std::vector<Wall>& walls, const sf::Vector2f& oldPos) {
 	sf::Vector2f iPoint(0.f, 0.f);
+	Line offset(oldPos, pos);
 	for (auto& iter : walls){//->begin(); iter != walls->end(); ++iter) {
 		if (iter.GetAlive()) {
-			if (Line(oldPos, pos).Intersection(Line(iter.GetLine()), iPoint)) {
-				Collision(iPoint, oldPos, iter.GetLine());
-				if (iter.GetDestructable()) {
-					iter.Destroy();
-					//break;
+			//TODO prune far objects more time to prune then calculate wtf???
+			//if ((Line(iter.GetLine().midPoint, pos).lenght + iter.GetLine().lenght / 2) > offset.lenght) {
+				if (offset.Intersection(iter.GetLine(), iPoint)) {
+					Collision(iPoint, oldPos, iter.GetLine());
+					if (iter.GetDestructable()) {
+						iter.Destroy();
+						//break;
+					}
+					return;
+					//CheckCollision(time, walls, oldPos);
 				}
-				//CheckCollision(time, walls, oldPos);
-			}
+			//}
 		}
 	}
 }
@@ -40,9 +45,9 @@ void Bullet::Update(float t, std::vector<Wall>& walls) {
 	pos += dir * speed * t;				//new position
 	body.setPosition(pos);
 
-	CheckCollision(t, walls, oldPos);
+	CheckCollision(walls, oldPos);
 
-	speed -= t/30.f;						//braking over time
+	//speed -= t/30.f;						//braking over time
 	time  += t;
 		
 	LifeCheck();
