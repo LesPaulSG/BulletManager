@@ -21,7 +21,7 @@ void Player::CheckCollision(float time, const sf::Vector2f& oldPos, std::vector<
 			if (iter.GetLine().CircleIntersection(pos, radius, iPoint)) {
 				//std::cout << i++ << " collision " << iPoint.x << ' ' << iPoint.y << std::endl;
 				Collision(time, iPoint, oldPos, iter);
-				break;
+				//break;
 			}
 		}
 	}
@@ -29,42 +29,25 @@ void Player::CheckCollision(float time, const sf::Vector2f& oldPos, std::vector<
 
 void Player::Collision(float time, const sf::Vector2f& iPoint, const sf::Vector2f& oldPos, const Wall& wall){
 	float angle = wall.GetLine().AngleOfIntersec(Line(oldPos, pos));
-	sf::Vector2f tmpDir = forwardVector;
-	std::cout << wall.GetRotation() << std::endl;
-	if (wall.GetLine().isPointRight(pos)) {
-		if (angle >= 1.5708f) {
-			std::cout << "1" << std::endl;
-			RotateVector(tmpDir, wall.GetRotation()-rotation);
-			//Rotate(wall.GetRotation() + rotation);
-			//std::cout << wall.GetRotation() << std::endl;
-		} else {
-			std::cout << "2" << std::endl;
-			RotateVector(tmpDir, wall.GetRotation()-rotation);
-			//Rotate(wall.GetRotation() + rotation);
-			//std::cout << wall.GetRotation() << std::endl;
-		}
+	sf::Vector2f tmpDir;
+	if (angle >= 1.5708f) {
+		tmpDir = wall.GetLine().pointA;// -forwardVector;// *radius;
 	} else {
-		if (angle >= 1.5708f) {
-			std::cout << "3" << std::endl;
-			RotateVector(tmpDir, -wall.GetRotation()+rotation);
-			//Rotate(-wall.GetRotation() + rotation);
-			//std::cout << wall.GetRotation() << std::endl;
-		}
-		else {
-			std::cout << "4" << std::endl;
-			RotateVector(tmpDir, -wall.GetRotation()+rotation);
-			//Rotate(-wall.GetRotation() + rotation);
-			//std::cout << wall.GetRotation() << std::endl;
-		}
+		tmpDir = wall.GetLine().pointB;// +forwardVector;// *radius;
 	}
-
+	
+	if (!wall.GetLine().isPointRight(pos)) {
+		pos -= (tmpDir - forwardVector) * time;// +forwardVector;
+	} else {
+		pos += (tmpDir + forwardVector) * time;// -forwardVector;
+	}
 	//std::cout << rotation << std::endl;
 	//Move(time/10);
-	pos += tmpDir * time * speed;
+	//pos += tmpDir * time * speed;
 	//ChangeDirection(angle, wall.isPointRight(oldPos));
 	//pos = iPoint + forwardVector * 0.00001f;		//update positon to intersection point + small distance
 	//pos = oldPos;
-	body.setPosition(pos);
+	//body.setPosition(pos);
 	//std::cout << pos.x << ' ' << pos.y << std::endl;
 	//speed *= 0.95f;
 }

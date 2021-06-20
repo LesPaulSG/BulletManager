@@ -8,9 +8,14 @@ Line::Line(sf::Vector2f A, sf::Vector2f B) {
 	midPoint.x = midX;
 	midPoint.y = midY;
 	lenght = sqrt(pow(midX, 2) + pow(midY, 2));
+	CalculateRotation();
 }
 
 Line::~Line() {}
+
+void Line::CalculateRotation() {
+	rotation = acos(midPoint.y / VectorsModule(midPoint));
+}
 
 /*sf::Vector2f Line::MidPoint() {
 	//static sf::Vector2f midPoint(MidX(), MidY());
@@ -60,17 +65,6 @@ bool Line::Intersection(const Line& B, sf::Vector2f& iPoint) const {
 }
 
 bool Line::CircleIntersection(const sf::Vector2f& circle, float radius, sf::Vector2f& iPoint) const {
-	/*sf::Vector2f oc = pointA - circle;
-	float b = pointA.x * pointB.x + pointA.y * pointB.y;
-	float c = (pointA.x * pointA.x + pointA.y * pointA.y) - pow(radius, 2);
-	float h = pow(b, 2) - c;
-	if (h < 0.f) {
-		return false;
-	}
-	h = sqrt(h);
-	iPoint.x = -b - h;
-	iPoint.y = -b + h;
-	return true;*/
 	double k = midY / midX;
 	double b = pointA.y - k * pointA.x;
 	//a = (1 + M ^ 2)

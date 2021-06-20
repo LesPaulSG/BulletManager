@@ -9,9 +9,12 @@ public:
 	float midY;
 	sf::Vector2f midPoint;
 	float lenght;				//check grammar
+	double rotation;
 
 	Line(sf::Vector2f A, sf::Vector2f B);
 	~Line();
+
+	void CalculateRotation();
 
 	//sf::Vector2f MidPoint();
 	//float MidX();

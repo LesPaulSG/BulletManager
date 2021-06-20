@@ -9,9 +9,12 @@ Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, float speed, float lifeTime)
 		time(0.f),
 		lifeTime(lifeTime),
 		alive(true) {
+	this->dir.x = 0.f;
+	this->dir.y = -1.f;
+	RotateUnitVector(this->dir, Line(pos, dir).rotation);
 	body.setPosition(pos);
 	body.setOrigin(sf::Vector2f(body.getOrigin().x + 10.f, body.getOrigin().y + 10.f));
-	body.setRadius(10.f);
+	body.setRadius(5.f);
 	body.setFillColor(sf::Color::Red);
 }
 
@@ -33,7 +36,7 @@ void Bullet::CheckCollision(std::vector<Wall>& walls, const sf::Vector2f& oldPos
 						//break;
 					}
 					return;
-					//CheckCollision(time, walls, oldPos);
+					//CheckCollision(walls, oldPos);
 				}
 			//}
 		}
@@ -55,19 +58,26 @@ void Bullet::Update(float t, std::vector<Wall>& walls) {
 
 void Bullet::Collision(const sf::Vector2f& iPoint, const sf::Vector2f& oldPos, const Line& wall) {
 	float angle = wall.AngleOfIntersec(Line(oldPos, pos));
-	ChangeDirection(angle, wall.isPointRight(oldPos));
-	pos = iPoint + dir * 0.00001f;		//update positon to intersection point + small distance
+	ChangeDirection(angle, wall.isPointRight(pos));
+	pos = iPoint + dir;// *0.00001f;		//update positon to intersection point + small distance
 	body.setPosition(pos);
-	speed *= 0.95f;
+	//speed *= 0.95f;
 }
 
 void Bullet::ChangeDirection(float beta, bool right) {
-	float alpha = 1.5708f  - beta;				//calculate alpha angle	
-	float angle = 3.14159f - (2.0f * alpha);	//rotation angle
-	if (!right) {
+	float rot = Line(pos, dir).rotation;
+	float alpha = 1.5708f - beta;				//calculate alpha angle	
+	//float angle = 3.14159f + (2.0f * alpha);	//rotation angle
+	float angle = rot - (alpha * 2.f);
+	if (right) {								//here is bug
+		
 		angle *= -1.f;
+		//angle += 3.14159f;
 	}
-	RotateVector(dir, angle);
+	else {
+		angle *= 1.f;
+	}
+	RotateUnitVector(dir, angle);
 }
 
 void Bullet::LifeCheck(){

@@ -83,7 +83,7 @@ void BulletManager::Update(float time) {
 
 void BulletManager::Fire(const sf::Vector2f& pos, const sf::Vector2f& dir, float speed, float lifeTime) {
 	if (bullets.size() < BULLETS_MAX_CAPACITY) {
-		bullets.push_back(Bullet(pos, dir, /*std::min(speed, 10.f)*/0.5f, lifeTime));
+		bullets.push_back(Bullet(pos, dir, /*std::min(speed, 10.f)*/50.5f, lifeTime));
 	}
 }
 
